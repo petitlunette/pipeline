@@ -41,3 +41,4 @@ prodigal -v
 conda install -c bioconda pplacer
 checkm lineage_wf -x fa /home/petitlunette/data_output/metaWRAP/sampledtest/metabat2_bins/ /home/petitlunette/data_output/checkm/sampledtest_metabat/
 checkm lineage_wf -x fa /home/petitlunette/data_output/metaWRAP/sampledtest/maxbin2_bins/ /home/petitlunette/data_output/checkm/sampledtest_maxbin/
+#maxbin had an actually okay bin, metabat did not with this (broken) data
