@@ -29,4 +29,14 @@ conda install -n metawrap-env bwa=0.7.15 samtools=1.3.1 metabat2=2.9.1 concoct=0
 pip install checkm-genome==1.0.7
 checkm data setRoot $HOME/metaWRAP/MY_CHECKM_FOLDER
 conda install -n metawrap-env bwa=0.7.15 -c bioconda
+conda install -n metawrap-env metabat2 -c bioconda
+conda install -n metawrap-env concoct -c bioconda
+conda install -n metawrap-env python=3.7 #concoct broke because it needed numpy
+#this broke it again, so back to py 2.7 just not using --concoct
 metawrap binning -o $HOME/data_output/metaWRAP/sampledtest -a $HOME/data_output/Medaka/sampledtest/consensus.fasta --metabat2 --maxbin2 --concoct --single-end $HOME/data/SRR10038437_sampled.fastq
+#bin refinement wont work only had 2-3 bins
+#using checkm for quality
+conda install -c bioconda prodigal
+prodigal -v
+checkm lineage_wf -x fa /home/petitlunette/data_output/metaWRAP/sampledtest/metabat2_bins/ /home/petitlunette/data_output/checkm/sampledtest/
+checkm lineage_wf -x fa /home/petitlunette/data_output/metaWRAP/sampledtest/maxbin2_bins/ /home/petitlunette/data_output/checkm/sampledtest/
