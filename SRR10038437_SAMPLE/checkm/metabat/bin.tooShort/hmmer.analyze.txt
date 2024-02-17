@@ -1,0 +1,13 @@
+#                                                                            --- full sequence --- -------------- this domain -------------   hmm coord   ali coord   env coord
+# target name        accession   tlen query name           accession   qlen   E-value  score  bias   #  of  c-Evalue  i-Evalue  score  bias  from    to  from    to  from    to  acc description of target
+#------------------- ---------- ----- -------------------- ---------- ----- --------- ------ ----- --- --- --------- --------- ------ ----- ----- ----- ----- ----- ----- ----- ---- ---------------------
+#
+# Program:         hmmsearch
+# Version:         3.4 (Aug 2023)
+# Pipeline mode:   SEARCH
+# Query file:      /tmp/dd22fc7d-dcec-42ae-9d15-006bbb2c5017
+# Target file:     /home/petitlunette/data_output/checkm/sampledtest/bins/bin.tooShort/genes.faa
+# Option settings: hmmsearch --domtblout /home/petitlunette/data_output/checkm/sampledtest/bins/bin.tooShort/hmmer.analyze.txt --noali --notextw -E 0.1 --domE 0.1 --cpu 1 /tmp/dd22fc7d-dcec-42ae-9d15-006bbb2c5017 /home/petitlunette/data_output/checkm/sampledtest/bins/bin.tooShort/genes.faa 
+# Current dir:     /home/petitlunette/metaWRAP/bin
+# Date:            Sat Feb 17 23:07:53 2024
+# [ok]
