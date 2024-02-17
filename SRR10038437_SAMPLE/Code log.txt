@@ -1,0 +1,21 @@
+#To reduce the sample size from ~10GB to ~1GB
+seqtk sample -s100 /home/petitlunette/data/SRR10038437.fastq 0.125 > /home/petitlunette/data/SRR10038437_sampled.fastq
+#To inc memory = swap space
+cd /mnt/e/ #my external hard drive
+sudo fallocate -l 16G swapfile
+sudo chmod 600 swapfile
+sudo mkswap swapfile
+sudo swapon swapfile
+#check it was created
+free -h
+#turn off when done before removing hard drive
+# sudo swapoff swapfile
+#check its active 
+# sudo swapon --show
+#run Nanoplot
+NanoPlot --fastq $HOME/data/SRR10038437_sampled.fastq -o $HOME/data_output/Nanoplot/sampledtest --verbose
+#run flye
+flye --nano-hq /home/petitlunette/data/SRR10038437_sampled.fastq --out-dir /home/petitlunette/data_output/Flye/sampledtest/ --iterations 0 --meta --threads 1
+#run medaka
+source $HOME/medaka/bin/activate
+medaka_consensus -i /home/petitlunette/data/SRR10038437_sampled.fastq -d $HOME/data_output/Flye/sampledtest/assembly.fasta -t 1 -o $HOME/data_output/Medaka/sampledtest
