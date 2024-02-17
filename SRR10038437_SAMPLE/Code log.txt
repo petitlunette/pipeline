@@ -19,7 +19,12 @@ flye --nano-hq /home/petitlunette/data/SRR10038437_sampled.fastq --out-dir /home
 #run medaka
 source $HOME/medaka/bin/activate
 medaka_consensus -i /home/petitlunette/data/SRR10038437_sampled.fastq -d $HOME/data_output/Flye/sampledtest/assembly.fasta -t 1 -o $HOME/data_output/Medaka/sampledtest
-
+#medaka did not finish but i have half a file
+#run metawrap
+conda activate metawrap-env
+nano config-metawrap #and the wrote this mw_path=/home/petitlunette/metaWRAP/bin/metawrap
+export PATH=$HOME/metaWRAP/bin:$PATH
+#metawrap dependencies cos it kept breaking
 conda install -n metawrap-env bwa=0.7.15 samtools=1.3.1 metabat2=2.9.1 concoct=0.4.0 maxbin2=2.2.4 kraken=0.10.6 krona=2.7 spades=3.10.1 -c bioconda -c conda-forge
 pip install checkm-genome==1.0.7
 checkm data setRoot $HOME/metaWRAP/MY_CHECKM_FOLDER
