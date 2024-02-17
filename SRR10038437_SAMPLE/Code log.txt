@@ -38,5 +38,6 @@ metawrap binning -o $HOME/data_output/metaWRAP/sampledtest -a $HOME/data_output/
 #using checkm for quality
 conda install -c bioconda prodigal
 prodigal -v
+conda install -c bioconda pplacer
 checkm lineage_wf -x fa /home/petitlunette/data_output/metaWRAP/sampledtest/metabat2_bins/ /home/petitlunette/data_output/checkm/sampledtest/
 checkm lineage_wf -x fa /home/petitlunette/data_output/metaWRAP/sampledtest/maxbin2_bins/ /home/petitlunette/data_output/checkm/sampledtest/
