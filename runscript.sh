@@ -114,6 +114,8 @@ if [["$run_pipeline" == "yes" ]]; then
     
     echo "Running Meryl..."
     MERYL_KMERS=$("Meryl" "default_kmers")
+    export PATH=$MERYL_PATH:$PATH #need to specify how you are getting this from the program function
+    meryl count k=21 $DATA_OUTPUT_PATH/flye 
     
     
 
