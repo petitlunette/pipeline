@@ -2,11 +2,18 @@
 
 # Path to the configuration file
 config_file="config.ini"
+#Define file path
+DATA_OUTPUT_PATH=$(get_config_value "Data" "output_data_dir")
+
+echo "Starting the pipeline. If not using defaults, define paths and program options in the config file. Checkpoints are used to skip completed steps. "
+echo "Note: If you wish to rerun the entire pipeline or specific steps, please delete the '.<step_name>_done' files from '$DATA_OUTPUT_PATH'."
+echo "To delete all checkpoint files and restart, run: 'rm $DATA_OUTPUT_PATH/.*_done'"
 
 # Function to read a value from the configuration file
 get_config_value() {
     awk -F "=" -v section="$1" -v key="$2" '$0 ~ "\\["section"\\]" {flag=1; next} /\\[.*\\]/ {flag=0} flag && $1 ~ key {print $2; exit}' "$config_file" | tr -d ' '
 }
+
 
 # List of programs to check
 declare -A program_paths
@@ -75,8 +82,20 @@ read FILE_TYPE
 
 # Define file paths
 VIRTUAL_ENV_PATH=$(get_config_value "Medaka" "medaka_env_path")
-DATA_OUTPUT_PATH=$(get_config_value "Data" "output_data_dir")
 PYTHON_PATH=$(which python || which python3)
+
+#Functions to create pipeline checkpoints 
+create_checkpoint() {
+    touch "$DATA_OUTPUT_PATH/.${1}_done"
+}
+check_for_checkpoint() {
+    if [ -f "$DATA_OUTPUT_PATH/.${1}_done" ]; then
+        echo "Checkpoint for ${1} found. Skipping..."
+        return 0 # 0 indicates the checkpoint exists, so skip the step
+    else
+        return 1 # 1 indicates no checkpoint, so proceed with the step
+    fi
+}
 
 # Create directories for each tool output within the virtual environment
 mkdir -p $DATA_OUTPUT_PATH/dorado
@@ -88,15 +107,17 @@ mkdir -p $DATA_OUTPUT_PATH/medaka
 
  # Ask user if they want to run Dorado for base calling
 read -p "Do you want to run Dorado for base calling? (yes/no): " run_dorado
-if [[ "$run_dorado" == "yes" ]]; then
-    echo "Running Dorado..."
-    cd $DATA_OUTPUT_PATH/dorado
-    export PATH=${program_paths[Dorado]}:$PATH
-    DORADO_MODEL=$(get_config_value "Dorado" "default_model")
-    dorado download --model $DORADO_MODEL
-    dorado basecaller $DORADO_MODEL $INPUT_PATH/*$FILE_TYPE/ > calls.fastq.gz
+if ! check_for_checkpoint "dorado"; then
+    if [[ "$run_dorado" == "yes" ]]; then
+        echo "Running Dorado..."
+        cd $DATA_OUTPUT_PATH/dorado
+        export PATH=${program_paths[Dorado]}:$PATH
+        DORADO_MODEL=$(get_config_value "Dorado" "default_model")
+        dorado download --model $DORADO_MODEL
+        dorado basecaller $DORADO_MODEL $INPUT_PATH/*$FILE_TYPE/ > calls.fastq.gz
+        create_checkpoint "dorado"
+    fi
 fi
-
 echo "Running NanoPlot..."
 export PATH=${program_paths[Nanoplot]}:$PATH
 NanoPlot --fastq calls.fastq.gz -o $DATA_OUTPUT_PATH/nanoplot
@@ -143,7 +164,13 @@ if [[ "$run_pipeline" == "yes" ]]; then
         echo "Using Conda environment: $METAWRAP_ENV"
     fi
     conda $METAWRAP_ENV
-    
+
+
+
+
+
+echo "Pipeline execution completed. If you wish to rerun the pipeline or specific steps, remember to delete the '.<step_name>_done' checkpoint files from '$DATA_OUTPUT_PATH'."
+
 
     
 
