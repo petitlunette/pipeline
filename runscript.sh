@@ -116,7 +116,12 @@ if [[ "$run_pipeline" == "yes" ]]; then
     cd $DATA_OUTPUT_PATH/meryl
     MERYL_KMERS=$(get_config_value "Meryl" "default_kmers")
     export PATH=${program_paths[Meryl]}:$PATH
-    meryl count k=21 $DATA_OUTPUT_PATH/flye/assembly.fasta output asmDB.k21.meryl
+    meryl count k=$MERYL_KMERS $DATA_OUTPUT_PATH/flye/assembly.fasta output assembly.k$MERYL_KMERS.meryl
+    echo "Running Merqury..."
+    cd $DATA_OUTPUT_PATH/merqury
+    export PATH=${program_paths[Merqury]}:$PATH
+    merqury.sh $DATA_OUTPUT_PATH/meryl/assembly.k$MERYL_KMERS.meryl $DATA_OUTPUT_PATH/flye/assembly.fasta <out>
+    
     
     
 
