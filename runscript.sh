@@ -110,6 +110,8 @@ mkdir -p $DATA_OUTPUT_PATH/flye
 mkdir -p $DATA_OUTPUT_PATH/meryl
 mkdir -p $DATA_OUTPUT_PATH/merqury
 mkdir -p $DATA_OUTPUT_PATH/medaka
+mkdir -p $DATA_OUTPUT_PATH/metawrap
+mkdir -p $DATA_OUTPUT_PATH/kraken
 
  # Ask user if they want to run Dorado for base calling
 read -p "Do you want to run Dorado for base calling? (yes/no): " run_dorado
