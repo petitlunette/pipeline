@@ -3,10 +3,13 @@
 # Path to the configuration file
 config_file="config.ini"
 #Define file path
-DATA_OUTPUT_PATH=$(get_config_value "Data" "output_data_dir")
+output_data_dir=$(get_config_value "Data" "output_data_dir")
+DATA_OUTPUT_PATH=${output_data_dir/CURRENT_DIR/$(pwd)}
+mkdir -p "$DATA_OUTPUT_PATH"
 echo "Starting the pipeline. If not using defaults, define paths and program options in the config file. Checkpoints are used to skip completed steps. "
 echo "Note: If you wish to rerun the entire pipeline or specific steps, please delete the '.<step_name>_done' files from '$DATA_OUTPUT_PATH'."
 echo "To delete all checkpoint files and restart, run: 'rm $DATA_OUTPUT_PATH/.*_done'"
+echo "Using output data directory: $DATA_OUTPUT_PATH"
 
 # Function to read a value from the configuration file
 get_config_value() {
