@@ -24,8 +24,8 @@ echo "Using output data directory: $DATA_OUTPUT_PATH"
 declare -A program_paths
 declare -a not_found_default_programs
 declare -a not_found_optional_programs
-default_programs=("Dorado" "Nanoplot" "Flye" "Meryl" "Merqury" "Medaka" "VALET" "Metawrap" "Kraken2")
-optional_programs=("Racon")
+default_programs=("Dorado" "Nanoplot" "Flye" "Meryl" "Merqury" "Medaka" "Metawrap" "Kraken2")
+optional_programs=("Racon" "VALET")
 
 # Function to check program paths
 check_programs() {
@@ -141,6 +141,7 @@ fi
 if [[ "$run_pipeline" == "yes" ]]; then
     if ! check_for_checkpoint "flye"; then
     echo "Running Flye ..."
+    export PATH=${program_paths[Flye]}:$PATH
     FLYE_ITERATIONS=$(get_config_value "Flye" "default_iterations")
     FLYE_QUALITY=$(get_config_value "Flye" "default_read_quality")
     if [[ "$run_dorado" == "yes" ]]; then
@@ -153,8 +154,8 @@ fi
 if ! check_for_checkpoint "meryl"; then
     echo "Running Meryl..."
     cd $DATA_OUTPUT_PATH/meryl
-    MERYL_KMERS=$(get_config_value "Meryl" "default_kmers")
     export PATH=${program_paths[Meryl]}:$PATH
+    MERYL_KMERS=$(get_config_value "Meryl" "default_kmers")
     meryl count k=$MERYL_KMERS $DATA_OUTPUT_PATH/flye/assembly.fasta output assembly.k$MERYL_KMERS.meryl
     create_checkpoint "meryl"
 fi
@@ -171,6 +172,7 @@ fi
 if ! check_for_checkpoint "medaka"; then
     echo "Running Medaka..."
     source $VIRTUAL_ENV_PATH
+    export PATH=${program_paths[Medaka]}:$PATH
     THREADS=$(get_config_value "Data" "threads")
     medaka_consensus -i $DATA_OUTPUT_PATH/dorado/calls.fastq.gz -d $DATA_OUTPUT_PATH/flye/assembly.fasta -o $DATA_OUTPUT_PATH/medaka -t $THREADS
     create_checkpoint "medaka"
@@ -181,6 +183,7 @@ fi
 if ! check_for_checkpoint "metawrap"; then
     echo "Running MetaWrap..."
     eval "$(conda shell.bash hook)"
+    export PATH=${program_paths[Metawrap]}:$PATH
     METAWRAP_ENV=$(get_config_value "Metawrap" "conda_env")
     if [ -z "$METAWRAP_ENV" ]; then
         echo "Conda environment name not found in config.ini. Please specify it under the [Environment] section."
