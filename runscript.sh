@@ -78,6 +78,7 @@ if [ -d "$INPUT_PATH" ]; then
     echo "Directory found at: $INPUT_PATH"
 else
     echo "Directory not found at: $INPUT_PATH. Please check the path and try again."
+    exit
 fi
 
 #Prompt the user for the input file type
@@ -179,6 +180,7 @@ fi
         
 if ! check_for_checkpoint "metawrap"; then
     echo "Running MetaWrap..."
+    eval "$(conda shell.bash hook)"
     METAWRAP_ENV=$(get_config_value "Metawrap" "conda_env")
     if [ -z "$METAWRAP_ENV" ]; then
         echo "Conda environment name not found in config.ini. Please specify it under the [Environment] section."
@@ -190,8 +192,9 @@ if ! check_for_checkpoint "metawrap"; then
     if [[ "$run_dorado" == "yes" ]]; then
         binning -o $DATA_OUTPUT_PATH/metawrap -a $DATA_OUTPUT_PATH/medaka/consensus.fasta --metabat2 --maxbin2 --concoct --single-end $DATA_OUTPUT_PATH/dorado/calls.fastq.gz
     else
-        binning -o $DATA_OUTPUT_PATH/metawrap -a $DATA_OUTPUT_PATH/medaka/consensus.fasta --metabat2 --maxbin2 --concoct --single-end $$INPUT_PATH/*$FILE_TYPE/
+        binning -o $DATA_OUTPUT_PATH/metawrap -a $DATA_OUTPUT_PATH/medaka/consensus.fasta --metabat2 --maxbin2 --concoct --single-end $INPUT_PATH/*$FILE_TYPE/
     fi
+    conda deactivate
     create_checkpoint "metawrap"
 fi
     
