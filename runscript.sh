@@ -9,47 +9,49 @@ get_config_value() {
 }
 
 # List of programs to check
-
+declare -A program_paths
+declare -a not_found_default_programs
+declare -a not_found_optional_programs
 default_programs=("Dorado" "Nanoplot" "Flye" "Meryl" "Merqury" "Medaka" "VALET" "Metawrap" "Kraken2")
 optional_programs=("Racon")
-not_found_programs=()
-declare -A program_paths
 
-for program in "${default_programs[@]}" "${optional_programs[@]}"; do
-    # Try to read program path from the configuration file first
-    program_path=$(get_config_value "$program" "path")
-    config_path_used=false
-
-    if [ -n "$program_path" ]; then
-        config_path_used=true
-    else
-        # Define standard locations for the program
-        standard_paths=("/usr/local/bin/$program" "/usr/bin/$program")
-         # Check standard locations
-        for path in "${standard_paths[@]}"; do
-            if [ -x "$path" ]; then
-                program_path="$path"
-                break
-            fi
-        done
-    fi
-
-    if [ -n "$program_path" ]; then
-        # Echo the message only if the path was set using the configuration file
-        if [ "$config_path_used" = true ]; then
-            echo "Using $program at: $program_path (from configuration file)"
+# Function to check program paths
+check_programs() {
+    local program_list=("${!1}")
+    local program_type="$2"
+    for program in "${program_list[@]}"; do
+        local program_path=""
+        # Check standard locations first
+        if [ -x "/usr/local/bin/$program" ]; then
+            program_path="/usr/local/bin/$program"
+        elif [ -x "/usr/bin/$program" ]; then
+            program_path="/usr/bin/$program"
+        else
+            # If not found in standard locations, check the configuration file
+            program_path=$(get_config_value "$program" "path")
         fi
-    # Store the path in the associative array
-        program_paths[$program]="$program_path"
-    else
-        # Program not found, add to not found list
-        not_found_programs+=("$program")
-    fi
-done
 
-# Check if any program was not found
-if [ ${not_found_programs[@]} -ne 0 ]; then
-    echo "The following programs were not found: ${not_found_programs[@]}."
+        if [ -n "$program_path" ]; then
+            program_paths[$program]="$program_path"
+            echo "Using $program at: $program_path"
+        else
+            if [ "$program_type" == "default" ]; then
+                not_found_default_programs+=("$program")
+            else
+                not_found_optional_programs+=("$program")
+                echo "Optional program $program not found. It will be skipped."
+            fi
+        fi
+    done
+}
+
+# Check default and optional programs
+check_programs default_programs[@] default
+check_programs optional_programs[@] optional
+
+# Handle missing default programs
+if [ ${#not_found_default_programs[@]} -ne 0 ]; then
+    echo "The following default programs were not found: ${not_found_default_programs[*]}."
     echo "Please specify the paths to these programs in the configuration file and rerun the script."
     exit 1
 fi
