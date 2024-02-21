@@ -124,7 +124,13 @@ if [[ "$run_pipeline" == "yes" ]]; then
     export PATH=${program_paths[Merqury]}:$PATH
     merqury.sh $DATA_OUTPUT_PATH/meryl/assembly.k$MERYL_KMERS.meryl $DATA_OUTPUT_PATH/flye/assembly.fasta <out>
     
-    
+    #is it worth having another qc prompt check here before proceeding?
+
+    echo "Running Medaka..."
+    source $VIRTUAL_ENV_PATH
+    THREADS=$(get_config_value "Data" "threads")
+    medaka_consensus -i $DATA_OUTPUT_PATH/dorado/calls.fastq.gz -d $DATA_OUTPUT_PATH/flye/assembly.fasta -o $DATA_OUTPUT_PATH/medaka -t $THREADS
+    deactivate
     
 
     
