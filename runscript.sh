@@ -125,12 +125,24 @@ if [[ "$run_pipeline" == "yes" ]]; then
     merqury.sh $DATA_OUTPUT_PATH/meryl/assembly.k$MERYL_KMERS.meryl $DATA_OUTPUT_PATH/flye/assembly.fasta <out>
     
     #is it worth having another qc prompt check here before proceeding?
+    #and then ask if running racon
 
     echo "Running Medaka..."
     source $VIRTUAL_ENV_PATH
     THREADS=$(get_config_value "Data" "threads")
     medaka_consensus -i $DATA_OUTPUT_PATH/dorado/calls.fastq.gz -d $DATA_OUTPUT_PATH/flye/assembly.fasta -o $DATA_OUTPUT_PATH/medaka -t $THREADS
     deactivate
+
+    #VALET here
+    echo "Running MetaWrap..."
+    METAWRAP_ENV=$(get_config_value "Metawrap" "conda_env")
+    if [ -z "$METAWRAP_ENV" ]; then
+        echo "Conda environment name not found in config.ini. Please specify it under the [Environment] section."
+        exit 1
+    else
+        echo "Using Conda environment: $METAWRAP_ENV"
+    fi
+    conda $METAWRAP_ENV
     
 
     
