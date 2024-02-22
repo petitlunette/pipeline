@@ -15,7 +15,7 @@ DATA_OUTPUT_PATH=${output_data_dir/CURRENT_DIR/$(pwd)}
 mkdir -p "$DATA_OUTPUT_PATH"
 
 echo "Starting the pipeline. If not using defaults, define paths and program options in the config file. Checkpoints are used to skip completed steps. "
-echo "Note: If you wish to rerun the entire pipeline or specific steps, please delete the '.<step_name>_done' files from '$DATA_OUTPUT_PATH'."
+echo "Note: If you wish to rerun the entire pipeline or specific steps, please delete the '.<step_name>_done' files from '$DATA_OUTPUT_PATH'. with 'rm -f .<step>_done'"
 echo "To delete all checkpoint files and restart, run: 'rm $DATA_OUTPUT_PATH/.*_done'"
 echo "Using output data directory: $DATA_OUTPUT_PATH"
 
