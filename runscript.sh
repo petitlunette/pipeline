@@ -181,12 +181,13 @@ if ! check_for_checkpoint "medaka"; then
     if [[ "$run_dorado" == "yes" ]]; then
         medaka_consensus -i $DATA_OUTPUT_PATH/dorado/calls.fastq.gz -d $DATA_OUTPUT_PATH/flye/assembly.fasta -o $DATA_OUTPUT_PATH/medaka -t $THREADS
     else
-    	medaka_consensus -i $INPUT_PATH -d $DATA_OUTPUT_PATH/flye/assembly.fasta -o $DATA_OUTPUT_PATH/medaka -t nproc --all
+    	medaka_consensus -i $INPUT_PATH -d $DATA_OUTPUT_PATH/flye/assembly.fasta -o $DATA_OUTPUT_PATH/medaka 
     fi
     create_checkpoint "medaka"
     deactivate
 fi  
         
+
 
 #VALET here
 
@@ -215,7 +216,6 @@ fi
     
 
 echo "Pipeline execution completed. If you wish to rerun the pipeline or specific steps, remember to delete the '.<step_name>_done' checkpoint files from '$DATA_OUTPUT_PATH'."
-
 #kraken2 
 
 #Kraken2 
