@@ -128,8 +128,8 @@ if ! check_for_checkpoint "dorado"; then
 fi
 echo "Running NanoPlot..."
 export PATH=${program_paths[NanoPlot]}:$PATH
-if [[ "$run_dorado" == "yes" ]]; then     
-    ${program_paths[Nanoplot]} --fastq $DATA_OUTPUT_PATH/dorado/calls.fastq -o $DATA_OUTPUT_PATH/nanoplot
+    if [[ "$run_dorado" == "yes" ]]; then
+    ${program_paths[Nanoplot]} --fastq $DATA_OUTPUT_PATH/dorado/calls.fastq.gz -o $DATA_OUTPUT_PATH/nanoplot
 else
     ${program_paths[Nanoplot]} --fastq $INPUT_PATH/*fastq -o $DATA_OUTPUT_PATH/nanoplot
 fi
@@ -149,7 +149,7 @@ if [[ "$run_pipeline" == "yes" ]]; then
     if [[ "$run_dorado" == "yes" ]]; then
         ${PYTHON_PATH} ${program_paths[Flye]} --nano-hq $DATA_OUTPUT_PATH/dorado/calls.fastq --out-dir $DATA_OUTPUT_PATH/flye --iterations $FLYE_ITERATIONS --meta
     else
-        ${PYTHON_PATH} ${program_paths[Flye]} --nano-hq $INPUT_PATH/*$FILE_TYPE/ --out-dir $DATA_OUTPUT_PATH/flye --iterations $FLYE_ITERATIONS --meta
+        ${PYTHON_PATH} ${program_paths[Flye]} --nano-hq $INPUT_PATH/*fastq --out-dir $DATA_OUTPUT_PATH/flye --iterations $FLYE_ITERATIONS --meta
     fi
 create_checkpoint "flye"
 fi
@@ -202,9 +202,7 @@ if ! check_for_checkpoint "metawrap"; then
     conda deactivate
     create_checkpoint "metawrap"
 fi
-    
-echo "Pipeline execution completed. If you wish to rerun the pipeline or specific steps, remember to delete the '.<step_name>_done' checkpoint files from '$DATA_OUTPUT_PATH'."
-    
+fi
 
 #kraken2 
 
