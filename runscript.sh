@@ -131,7 +131,7 @@ export PATH=${program_paths[NanoPlot]}:$PATH
     if [[ "$run_dorado" == "yes" ]]; then
     ${program_paths[Nanoplot]} --fastq $DATA_OUTPUT_PATH/dorado/calls.fastq.gz -o $DATA_OUTPUT_PATH/nanoplot
 else
-    ${program_paths[Nanoplot]} --fastq $INPUT_PATH/*fastq -o $DATA_OUTPUT_PATH/nanoplot
+    ${program_paths[Nanoplot]} --fastq $INPUT_PATH/*$FILE_TYPE -o $DATA_OUTPUT_PATH/nanoplot
 fi
 cat $DATA_OUTPUT_PATH/nanoplot/NanoStats.txt 
 read -p "Is the quality of the data sufficient to run the pipeline? (yes/no): " run_pipeline
@@ -149,7 +149,7 @@ if [[ "$run_pipeline" == "yes" ]]; then
     if [[ "$run_dorado" == "yes" ]]; then
         ${PYTHON_PATH} ${program_paths[Flye]} --nano-hq $DATA_OUTPUT_PATH/dorado/calls.fastq --out-dir $DATA_OUTPUT_PATH/flye --iterations $FLYE_ITERATIONS --meta
     else
-        ${PYTHON_PATH} ${program_paths[Flye]} --nano-hq $INPUT_PATH/*fastq --out-dir $DATA_OUTPUT_PATH/flye --iterations $FLYE_ITERATIONS --meta
+        ${PYTHON_PATH} ${program_paths[Flye]} --nano-hq $INPUT_PATH/*$FILE_TYPE --out-dir $DATA_OUTPUT_PATH/flye --iterations $FLYE_ITERATIONS --meta
     fi
 create_checkpoint "flye"
 fi
@@ -165,10 +165,12 @@ if ! check_for_checkpoint "merqury"; then
     echo "Running Merqury..."
     cd $DATA_OUTPUT_PATH/merqury
     export PATH=${program_paths[Merqury]}:$PATH
+    export MERQURY=${program_paths[Merqury]}
     merqury.sh $DATA_OUTPUT_PATH/meryl/assembly.k$MERYL_KMERS.meryl $DATA_OUTPUT_PATH/flye/assembly.fasta merqury_output
     create_checkpoint "merqury"
 fi
-        #is it worth having another qc prompt check here before proceeding?
+        
+#is it worth having another qc prompt check here before proceeding?
         #and then ask if running racon
         
 if ! check_for_checkpoint "medaka"; then
@@ -176,11 +178,18 @@ if ! check_for_checkpoint "medaka"; then
     source $VIRTUAL_ENV_PATH
     export PATH=${program_paths[Medaka]}:$PATH
     THREADS=$(get_config_value "Data" "threads")
-    medaka_consensus -i $DATA_OUTPUT_PATH/dorado/calls.fastq -d $DATA_OUTPUT_PATH/flye/assembly.fasta -o $DATA_OUTPUT_PATH/medaka -t $THREADS
+    if [[ "$run_dorado" == "yes" ]]; then
+        medaka_consensus -i $DATA_OUTPUT_PATH/dorado/calls.fastq.gz -d $DATA_OUTPUT_PATH/flye/assembly.fasta -o $DATA_OUTPUT_PATH/medaka -t $THREADS
+    else
+    	medaka_consensus -i $INPUT_PATH -d $DATA_OUTPUT_PATH/flye/assembly.fasta -o $DATA_OUTPUT_PATH/medaka -t nproc --all
+    fi
     create_checkpoint "medaka"
     deactivate
 fi  
-        #VALET here
+        
+
+#VALET here
+
         
 if ! check_for_checkpoint "metawrap"; then
     echo "Running MetaWrap..."
@@ -195,14 +204,17 @@ if ! check_for_checkpoint "metawrap"; then
     fi
     conda activate $METAWRAP_ENV
     if [[ "$run_dorado" == "yes" ]]; then
-        binning -o $DATA_OUTPUT_PATH/metawrap -a $DATA_OUTPUT_PATH/medaka/consensus.fasta --metabat2 --maxbin2 --concoct --single-end $DATA_OUTPUT_PATH/dorado/calls.fastq.gz
+        metawrap binning -o $DATA_OUTPUT_PATH/metawrap -a $DATA_OUTPUT_PATH/medaka/consensus.fasta --metabat2 --maxbin2 --concoct --single-end $DATA_OUTPUT_PATH/dorado/calls.fastq.gz
     else
-        binning -o $DATA_OUTPUT_PATH/metawrap -a $DATA_OUTPUT_PATH/medaka/consensus.fasta --metabat2 --maxbin2 --concoct --single-end $INPUT_PATH/*$FILE_TYPE/
+        metawrap binning -o $DATA_OUTPUT_PATH/metawrap -a $DATA_OUTPUT_PATH/medaka/consensus.fasta --metabat2 --maxbin2 --concoct --single-end $INPUT_PATH
     fi
     conda deactivate
     create_checkpoint "metawrap"
 fi
 fi
+    
+
+echo "Pipeline execution completed. If you wish to rerun the pipeline or specific steps, remember to delete the '.<step_name>_done' checkpoint files from '$DATA_OUTPUT_PATH'."
 
 #kraken2 
 
