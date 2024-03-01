@@ -221,29 +221,6 @@ fi
 
 #Kraken2 
 
-# Ask the user if they have an existing Kraken2 database
-read -p "Do you have an existing Kraken2 database? (yes/no): " has_kraken_db
-
-if [[ "$has_kraken_db" == "yes" ]]; then
-    # User has an existing database
-    # Prompt for the database name
-    read -p "Enter the name of your existing Kraken2 database: " DBNAME
-else
-    # No existing database; prompt for new database name
-    read -p "Enter a name for your new Kraken2 database: " DBNAME
-    # Create and build the database
-    echo "Creating and building new Kraken2 database named $DBNAME..."
-    kraken2-build --standard --db "$DBNAME"
-    echo "Database $DBNAME setup complete."
-fi
-
-# Run Kraken2 analysis
-echo "Running Kraken2 analysis using the database $DBNAME..."
-kraken2 --db "$DBNAME" $DATA_OUTPUT_PATH/medaka/consensus.fasta --output "$DATA_OUTPUT_PATH/kraken2_output.txt" --report "$DATA_OUTPUT_PATH/kraken2_report.txt" 
-
-echo "Kraken2 analysis completed. Output and report are saved in $DATA_OUTPUT_PATH."
-
-###check this morgan and see if it needs anything
 if ! check_for_checkpoint "kraken2"; then
     DBNAME=$(get_config_value "Kraken2" "dbname")
     if [[ -z "$DBNAME" ]]; then
