@@ -114,6 +114,7 @@ mkdir -p $DATA_OUTPUT_PATH/flye
 mkdir -p $DATA_OUTPUT_PATH/meryl
 mkdir -p $DATA_OUTPUT_PATH/merqury
 mkdir -p $DATA_OUTPUT_PATH/medaka
+mkdir -p $DATA_OUTPUT_PATH/valet
 mkdir -p $DATA_OUTPUT_PATH/metawrap
 mkdir -p $DATA_OUTPUT_PATH/kraken
 
@@ -194,6 +195,38 @@ fi
 
 
 #VALET here
+#Assuming the Medaka step has been completed as per the previous script
+
+#VALET for misassembly detection
+if ! check_for_checkpoint "valet"; then
+    echo "Running VALET for misassembly detection..."
+
+    #Assuming VALET is installed and the path is set in the configuration file
+    VALET_PATH=$(get_config_value "VALET" "path")
+    export PATH=${VALET_PATH}:$PATH
+
+    #Define input assembly file(s) and read files for VALET
+    #Assuming Flye assembly output is used for VALET analysis
+    ASSEMBLY_FILE="$DATA_OUTPUT_PATH/flye/assembly.fasta"
+    #Example input read files, adjust based on actual file paths and names
+    LIB1_FASTQ="$INPUT_PATH/lib1.1.fastq"
+    LIB2_FASTQ="$INPUT_PATH/lib1.2.fastq"
+
+    #Define VALET output directory
+    VALET_OUTPUT_DIR="$DATA_OUTPUT_PATH/valet"
+    mkdir -p "$VALET_OUTPUT_DIR"
+
+    #Running VALET
+    #Note: Adjust the assembly names and input files as necessary
+    python ${VALET_PATH}/valet.py -a $ASSEMBLY_FILE -1 $LIB1_FASTQ -2 $LIB2_FASTQ --assembly-names reference -o $VALET_OUTPUT_DIR
+
+    echo "VALET analysis completed. Results are stored in $VALET_OUTPUT_DIR"
+
+    #Checkpoint created to avoid re-running VALET in future executions
+    create_checkpoint "valet"
+fi
+
+
 
         
 if ! check_for_checkpoint "metawrap"; then
