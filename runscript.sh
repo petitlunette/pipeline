@@ -73,6 +73,10 @@ fi
 echo "Please enter the path to your input data directory:"
 read INPUT_PATH
 
+if [[ "$INPUT_PATH" == */ ]]; then
+    INPUT_PATH="${INPUT_PATH%?}"
+fi
+
 # Check if the file exists
 if [ -d "$INPUT_PATH" ]; then
     echo "Directory found at: $INPUT_PATH"
@@ -97,9 +101,9 @@ create_checkpoint() {
 check_for_checkpoint() {
     if [ -f "$DATA_OUTPUT_PATH/.${1}_done" ]; then
         echo "Checkpoint for ${1} found. Skipping..."
-        return 0 # 0 indicates the checkpoint exists, so skip the step
+        return 0 
     else
-        return 1 # 1 indicates no checkpoint, so proceed with the step
+        return 1
     fi
 }
 
@@ -214,9 +218,6 @@ if ! check_for_checkpoint "metawrap"; then
 fi
 fi
     
-
-echo "Pipeline execution completed. If you wish to rerun the pipeline or specific steps, remember to delete the '.<step_name>_done' checkpoint files from '$DATA_OUTPUT_PATH'."
-#kraken2 
 
 #Kraken2 
 
