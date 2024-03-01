@@ -257,6 +257,8 @@ if ! check_for_checkpoint "kraken2"; then
             echo "Creating and building new Kraken2 database $DBNAME..."
             kraken2-build --standard --db "$DBNAME"
             echo "Database $DBNAME setup complete."
+            sed -i "/^\[Kraken2\]/,/^\[/ {/^dbname=/ s|=.*|=$DBNAME|}" "$config_file"
+            echo "Kraken2 database location updated in config: $DBNAME"
         fi
     else
         echo "Found Kraken2 database location in config: $DBNAME"
@@ -265,7 +267,6 @@ if ! check_for_checkpoint "kraken2"; then
     echo "Running Kraken2 analysis using the database $DBNAME..."
     kraken2 --db "$DBNAME" $DATA_OUTPUT_PATH/medaka/consensus.fasta --output "$DATA_OUTPUT_PATH/kraken2_output.txt" --report "$DATA_OUTPUT_PATH/kraken2_report.txt" 
     create_checkpoint "kraken2"
-    fi
 fi
 
 
