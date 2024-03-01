@@ -243,6 +243,35 @@ kraken2 --db "$DBNAME" $DATA_OUTPUT_PATH/medaka/consensus.fasta --output "$DATA_
 
 echo "Kraken2 analysis completed. Output and report are saved in $DATA_OUTPUT_PATH."
 
+###check this morgan and see if it needs anything
+if ! check_for_checkpoint "kraken2"; then
+    DBNAME=$(get_config_value "Kraken2" "dbname")
+    if [[ -z "$DBNAME" ]]; then
+        read -p "No Kraken2 database location found in the config. Do you have an existing Kraken2 database? (yes/no): " has_kraken_db
+        if [[ "$has_kraken_db" == "yes" ]]; then
+            # Prompt for the database name
+            read -p "Enter the location of your existing Kraken2 database: " DBNAME
+        else
+            # Prompt for new database name and create it
+            read -p "Enter a location for your new Kraken2 database: " DBNAME
+            echo "Creating and building new Kraken2 database $DBNAME..."
+            kraken2-build --standard --db "$DBNAME"
+            echo "Database $DBNAME setup complete."
+        fi
+    else
+        echo "Found Kraken2 database location in config: $DBNAME"
+    fi
+    
+    echo "Running Kraken2 analysis using the database $DBNAME..."
+    kraken2 --db "$DBNAME" $DATA_OUTPUT_PATH/medaka/consensus.fasta --output "$DATA_OUTPUT_PATH/kraken2_output.txt" --report "$DATA_OUTPUT_PATH/kraken2_report.txt" 
+    create_checkpoint "kraken2"
+    fi
+fi
+
+
+
+
+
 
 echo "Pipeline execution completed. If you wish to rerun the pipeline or specific steps, remember to delete the '.<step_name>_done' checkpoint files from '$DATA_OUTPUT_PATH'."
 
