@@ -252,13 +252,18 @@ if ! check_for_checkpoint "kraken2"; then
             # Prompt for new database name and create it
             read -p "Enter a location for your new Kraken2 database: " DBNAME
             echo "Creating and building new Kraken2 database at $DBNAME..."
+	    mkdir -p "$DBNAME"
             if ! kraken2-build --standard --db "$DBNAME"; then
                 echo "Standard database build failed. Attempting to download prebuilt database..."
-                cd $DBNAME
-                wget https://genome-idx.s3.amazonaws.com/kraken/k2_standard_20240112.tar.gz
-                echo "Extracting database..."
-                tar -xzf k2_standard_20240112.tar.gz
-                echo "Prebuilt database downloaded and extracted."
+                wget -O "$DBNAME/k2_standard_20240112.tar.gz" https://genome-idx.s3.amazonaws.com/kraken/k2_standard_20240112.tar.gz
+		if [ $? -eq 0 ]; then
+                    echo "Extracting database..."
+		    tar -xzf "$DBNAME/k2_standard_20240112.tar.gz" -C "$DBNAME" --strip-components=1 && rm "$DBNAME/k2_standard_20240112.tar.gz"
+		    echo "Prebuilt database downloaded and extracted."
+                else
+                    echo "Failed to download the prebuilt database. Please check your internet connection or the URL and try again."
+                    exit 1
+                fi
             fi
             conda deactivate
             echo "Database $DBNAME setup complete."
@@ -279,6 +284,3 @@ echo "Pipeline execution completed. If you wish to rerun the pipeline or specifi
 
 
     
-
-
-
