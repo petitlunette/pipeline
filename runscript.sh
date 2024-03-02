@@ -89,7 +89,6 @@ fi
 echo "Which input file type are you using? (pod5/fast5/fastq/fastq.gz)"
 read FILE_TYPE
 
-
 # Define file paths
 VIRTUAL_ENV_PATH=$(get_config_value "Medaka" "medaka_env_path")
 PYTHON_PATH=$(which python || which python3)
@@ -127,18 +126,20 @@ if ! check_for_checkpoint "dorado"; then
         export PATH=${program_paths[Dorado]}:$PATH
         DORADO_MODEL=$(get_config_value "Dorado" "default_model")
         dorado download --model $DORADO_MODEL
-        dorado basecaller $DORADO_MODEL $INPUT_PATH/ > calls.fastq.gz
+        dorado basecaller $DORADO_MODEL $INPUT_PATH/ > calls.fastq
         create_checkpoint "dorado"
+        echo "Dorado analysis completed. Results are stored in $DATA_OUTPUT_PATH/dorado"
     fi
 fi
 echo "Running NanoPlot..."
 export PATH=${program_paths[NanoPlot]}:$PATH
     if [[ "$run_dorado" == "yes" ]]; then
-    ${program_paths[Nanoplot]} --fastq $DATA_OUTPUT_PATH/dorado/calls.fastq.gz -o $DATA_OUTPUT_PATH/nanoplot
+    ${program_paths[Nanoplot]} --fastq $DATA_OUTPUT_PATH/dorado/calls.fastq -o $DATA_OUTPUT_PATH/nanoplot
 else
     ${program_paths[Nanoplot]} --fastq $INPUT_PATH/*$FILE_TYPE -o $DATA_OUTPUT_PATH/nanoplot
 fi
 cat $DATA_OUTPUT_PATH/nanoplot/NanoStats.txt 
+echo "Nanoplot analysis completed. Results are stored in $DATA_OUTPUT_PATH/nanoplot"
 read -p "Is the quality of the data sufficient to run the pipeline? (yes/no): " run_pipeline
 if [[ "$run_pipeline" == "no" ]]; then
     exit
@@ -157,7 +158,9 @@ if [[ "$run_pipeline" == "yes" ]]; then
         ${PYTHON_PATH} ${program_paths[Flye]} --nano-hq $INPUT_PATH/*$FILE_TYPE --out-dir $DATA_OUTPUT_PATH/flye --iterations $FLYE_ITERATIONS --meta
     fi
 create_checkpoint "flye"
+echo "Flye analysis completed. Results are stored in $DATA_OUTPUT_PATH/flye"
 fi
+
 if ! check_for_checkpoint "meryl"; then
     echo "Running Meryl..."
     cd $DATA_OUTPUT_PATH/meryl
@@ -165,6 +168,7 @@ if ! check_for_checkpoint "meryl"; then
     MERYL_KMERS=$(get_config_value "Meryl" "default_kmers")
     meryl count k=$MERYL_KMERS $DATA_OUTPUT_PATH/flye/assembly.fasta output assembly.k$MERYL_KMERS.meryl
     create_checkpoint "meryl"
+    echo "Meryl analysis completed. Results are stored in $DATA_OUTPUT_PATH/meryl"
 fi
 if ! check_for_checkpoint "merqury"; then
     echo "Running Merqury..."
@@ -173,10 +177,8 @@ if ! check_for_checkpoint "merqury"; then
     export MERQURY=${program_paths[Merqury]}
     merqury.sh $DATA_OUTPUT_PATH/meryl/assembly.k$MERYL_KMERS.meryl $DATA_OUTPUT_PATH/flye/assembly.fasta merqury_output
     create_checkpoint "merqury"
+    echo "Merqury analysis completed. Results are stored in $DATA_OUTPUT_PATH/merqury"
 fi
-        
-#is it worth having another qc prompt check here before proceeding?
-        #and then ask if running racon
         
 if ! check_for_checkpoint "medaka"; then
     echo "Running Medaka..."
@@ -184,45 +186,28 @@ if ! check_for_checkpoint "medaka"; then
     export PATH=${program_paths[Medaka]}:$PATH
     THREADS=$(get_config_value "Data" "threads")
     if [[ "$run_dorado" == "yes" ]]; then
-        medaka_consensus -i $DATA_OUTPUT_PATH/dorado/calls.fastq.gz -d $DATA_OUTPUT_PATH/flye/assembly.fasta -o $DATA_OUTPUT_PATH/medaka -t $THREADS
+        medaka_consensus -i $DATA_OUTPUT_PATH/dorado/calls.fastq -d $DATA_OUTPUT_PATH/flye/assembly.fasta -o $DATA_OUTPUT_PATH/medaka -t $THREADS
+    elif [[ "$FILE_TYPE" == "fastq.gz" ]]; then
+        mkdir -p $TEMP_FASTQ_PATH
+        for gz in $INPUT_PATH/*.fastq.gz; do
+            gzip -dkc "$gz" > "$TEMP_FASTQ_PATH/$(basename "${gz%.*}")"
+        done
+    	medaka_consensus -i $TEMP_FASTQ_PATH -d $DATA_OUTPUT_PATH/flye/assembly.fasta -o $DATA_OUTPUT_PATH/medaka 
     else
-    	medaka_consensus -i $INPUT_PATH -d $DATA_OUTPUT_PATH/flye/assembly.fasta -o $DATA_OUTPUT_PATH/medaka 
+        medaka_consensus -i $INPUT_PATH -d $DATA_OUTPUT_PATH/flye/assembly.fasta -o $DATA_OUTPUT_PATH/medaka
     fi
     create_checkpoint "medaka"
+    echo "Medaka analysis completed. Results are stored in $DATA_OUTPUT_PATH/medaka"
     deactivate
 fi  
         
-
-
-#VALET here
-#Assuming the Medaka step has been completed as per the previous script
-
-#VALET for misassembly detection
 if ! check_for_checkpoint "valet"; then
     echo "Running VALET for misassembly detection..."
-
-    #Assuming VALET is installed and the path is set in the configuration file
-    VALET_PATH=$(get_config_value "VALET" "path")
-    export PATH=${VALET_PATH}:$PATH
-
-    #Define input assembly file(s) and read files for VALET
-    #Assuming Flye assembly output is used for VALET analysis
-    ASSEMBLY_FILE="$DATA_OUTPUT_PATH/flye/assembly.fasta"
-    #Example input read files, adjust based on actual file paths and names
-    LIB1_FASTQ="$INPUT_PATH/lib1.1.fastq"
-    LIB2_FASTQ="$INPUT_PATH/lib1.2.fastq"
-
-    #Define VALET output directory
-    VALET_OUTPUT_DIR="$DATA_OUTPUT_PATH/valet"
-    mkdir -p "$VALET_OUTPUT_DIR"
-
-    #Running VALET
-    #Note: Adjust the assembly names and input files as necessary
-    python ${VALET_PATH}/valet.py -a $ASSEMBLY_FILE -1 $LIB1_FASTQ -2 $LIB2_FASTQ --assembly-names reference -o $VALET_OUTPUT_DIR
-
-    echo "VALET analysis completed. Results are stored in $VALET_OUTPUT_DIR"
-
-    #Checkpoint created to avoid re-running VALET in future executions
+    export PATH=${program_paths[Valet]}:$PATH
+    if [[ "$FILE_TYPE" == "fastq.gz" ]]; then
+    ${PYTHON_PATH} ${program_paths[VALET]}/valet.py -a $DATA_OUTPUT_PATH/medaka/consensus.fasta -q -1 $INPUT_PATH/*fastq  --assembly-names reference -o $DATA_OUTPUT_PATH/valet
+    else
+    echo "VALET analysis completed. Results are stored in $DATA_OUTPUT_PATH/valet"
     create_checkpoint "valet"
 fi
 
@@ -248,6 +233,7 @@ if ! check_for_checkpoint "metawrap"; then
     fi
     conda deactivate
     create_checkpoint "metawrap"
+    echo "Metawrap analysis completed. Results are stored in $DATA_OUTPUT_PATH/metawrap"
 fi
 fi
     
