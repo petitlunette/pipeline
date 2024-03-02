@@ -258,14 +258,14 @@ if ! check_for_checkpoint "kraken2"; then
                 wget -O "$DBNAME/k2_standard_20240112.tar.gz" https://genome-idx.s3.amazonaws.com/kraken/k2_standard_20240112.tar.gz
 		if [ $? -eq 0 ]; then
                     echo "Extracting database..."
-		    tar -xzf "$DBNAME/k2_standard_20240112.tar.gz" -C "$DBNAME" --strip-components=1 && rm "$DBNAME/k2_standard_20240112.tar.gz"
+		    tar -xzf "$DBNAME/k2_standard_20240112.tar.gz" -C "$DBNAME" --strip-components=1 
+		    rm "$DBNAME/k2_standard_20240112.tar.gz"
 		    echo "Prebuilt database downloaded and extracted."
                 else
                     echo "Failed to download the prebuilt database. Please check your internet connection or the URL and try again."
                     exit 1
                 fi
             fi
-            conda deactivate
             echo "Database $DBNAME setup complete."
             sed -i "/^\[Kraken2\]/,/^\[/ {/^dbname=/ s|=.*|=$DBNAME|}" "$config_file"
             echo "Kraken2 database location updated in config: $DBNAME"
