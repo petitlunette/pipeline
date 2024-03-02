@@ -204,15 +204,16 @@ fi
 if ! check_for_checkpoint "valet"; then
     echo "Running VALET for misassembly detection..."
     export PATH=${program_paths[Valet]}:$PATH
-    if [[ "$FILE_TYPE" == "fastq.gz" ]]; then
-    ${PYTHON_PATH} ${program_paths[VALET]}/valet.py -a $DATA_OUTPUT_PATH/medaka/consensus.fasta -q -1 $INPUT_PATH/*fastq  --assembly-names reference -o $DATA_OUTPUT_PATH/valet
+    if [[ "$run_dorado" == "yes" ]]; then
+        ${PYTHON_PATH} ${program_paths[VALET]}/valet.py -a $DATA_OUTPUT_PATH/medaka/consensus.fasta -q -1 $DATA_OUTPUT_PATH/dorado/calls.fastq
+    elif [[ "$FILE_TYPE" == "fastq.gz" ]]; then
+        ${PYTHON_PATH} ${program_paths[VALET]}/valet.py -a $DATA_OUTPUT_PATH/medaka/consensus.fasta -q -1 $TEMP_FASTQ_PATH/*fastq  --assembly-names reference -o $DATA_OUTPUT_PATH/valet
     else
+        ${PYTHON_PATH} ${program_paths[VALET]}/valet.py -a $DATA_OUTPUT_PATH/medaka/consensus.fasta -q -1 $INPUT_PATH/*$FILE_TYPE  --assembly-names reference -o $DATA_OUTPUT_PATH/valet
+    fi
     echo "VALET analysis completed. Results are stored in $DATA_OUTPUT_PATH/valet"
     create_checkpoint "valet"
 fi
-
-
-
         
 if ! check_for_checkpoint "metawrap"; then
     echo "Running MetaWrap..."
@@ -250,8 +251,16 @@ if ! check_for_checkpoint "kraken2"; then
         else
             # Prompt for new database name and create it
             read -p "Enter a location for your new Kraken2 database: " DBNAME
-            echo "Creating and building new Kraken2 database $DBNAME..."
-            kraken2-build --standard --db "$DBNAME"
+            echo "Creating and building new Kraken2 database at $DBNAME..."
+            if ! kraken2-build --standard --db "$DBNAME"; then
+                echo "Standard database build failed. Attempting to download prebuilt database..."
+                cd $DBNAME
+                wget https://genome-idx.s3.amazonaws.com/kraken/k2_standard_20240112.tar.gz
+                echo "Extracting database..."
+                tar -xzf k2_standard_20240112.tar.gz
+                echo "Prebuilt database downloaded and extracted."
+            fi
+            conda deactivate
             echo "Database $DBNAME setup complete."
             sed -i "/^\[Kraken2\]/,/^\[/ {/^dbname=/ s|=.*|=$DBNAME|}" "$config_file"
             echo "Kraken2 database location updated in config: $DBNAME"
@@ -264,10 +273,6 @@ if ! check_for_checkpoint "kraken2"; then
     kraken2 --db "$DBNAME" $DATA_OUTPUT_PATH/medaka/consensus.fasta --output "$DATA_OUTPUT_PATH/kraken2_output.txt" --report "$DATA_OUTPUT_PATH/kraken2_report.txt" 
     create_checkpoint "kraken2"
 fi
-
-
-
-
 
 
 echo "Pipeline execution completed. If you wish to rerun the pipeline or specific steps, remember to delete the '.<step_name>_done' checkpoint files from '$DATA_OUTPUT_PATH'."
