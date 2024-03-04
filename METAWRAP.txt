@@ -1,44 +1,36 @@
-Here is what runs with the current script:
-
 Running MetaWrap...
 Using Conda environment: metawrap_env
-metawrap binning -o /mnt/data/lj752/data/MSc_training/scripting/data_output/metawrap -a /mnt/data/lj752/data/MSc_training/scripting/data_output/medaka/consensus.fasta --metabat2 --maxbin2 --concoct --single-end /mnt/data/lj752/data/MSc_training/scripting
-
-------------------------------------------------------------------------------------------------------------------------
------                                           Entered read type: single                                          -----
-------------------------------------------------------------------------------------------------------------------------
+find: ‘’: No such file or directory
+metawrap binning -o /mnt/data/lj752/data/MSc_training/scripting/data_output/metawrap -a /mnt/data/lj752/data/MSc_training/scripting/data_output/medaka/consensus.fasta --metabat2 --maxbin2 --concoct --single-end /mnt/data/lj752/data/MSc_training/scripting/fastq_1.fastq /mnt/data/lj752/data/MSc_training/scripting/fastq_2.fastq /mnt/data/lj752/data/MSc_training/scripting/fastq_4.fastq /mnt/data/lj752/data/MSc_training/scripting/fastq_3.fastq /mnt/data/lj752/data/MSc_training/scripting/fastq_0.fastq /mnt/data/lj752/data/MSc_training/scripting/fastq_1.fastq /mnt/data/lj752/data/MSc_training/scripting/fastq_2.fastq /mnt/data/lj752/data/MSc_training/scripting/fastq_4.fastq /mnt/data/lj752/data/MSc_training/scripting/fastq_3.fastq /mnt/data/lj752/data/MSc_training/scripting/fastq_0.fastq
 
 
-------------------------------------------------------------------------------------------------------------------------
------               Unable to find read files in format *.fastq (for single-end or interleaved reads)              -----
-------------------------------------------------------------------------------------------------------------------------
-
-
-Usage: metaWRAP binning [options] -a assembly.fa -o output_dir readsA_1.fastq readsA_2.fastq ... [readsX_1.fastq readsX_2.fastq]
-Note1: Make sure to provide all your separately replicate read files, not the joined file.
-Note2: You may provide single end or interleaved reads as well with the use of the correct option
-Note3: If the output already has the .bam alignments files from previous runs, the module will skip re-aligning the reads
-
-Options:
-
-	-a STR          metagenomic assembly file
-	-o STR          output directory
-	-t INT          number of threads (default=1)
-	-m INT		amount of RAM available (default=4)
-	-l INT		minimum contig length to bin (default=1000bp). Note: metaBAT will default to 1500bp minimum
-
-	--metabat2      bin contigs with metaBAT2
-	--metabat1	bin contigs with the original metaBAT
-	--maxbin2	bin contigs with MaxBin2
-	--concoct	bin contigs with CONCOCT
-
-	--universal	use universal marker genes instead of bacterial markers in MaxBin2 (improves Archaea binning)
-	--run-checkm	immediately run CheckM on the bin results (requires 40GB+ of memory)
-	--single-end	non-paired reads mode (provide *.fastq files)
-	--interleaved	the input read files contain interleaved paired-end reads
-
-
-real	0m0.221s
-user	0m0.046s
-sys	0m0.015s
-Metawrap analysis completed. Results are stored in /mnt/data/lj752/data/MSc_training/scripting/data_output/metawrap
+this is the script for that portion:
+if ! check_for_checkpoint "metawrap"; then
+    echo "Running MetaWrap..."
+    eval "$(conda shell.bash hook)"
+    METAWRAP_ENV=$(get_config_value "Metawrap" "conda_env")
+    if [ -z "$METAWRAP_ENV" ]; then
+        echo "Conda environment name not found in config.ini. Please specify it under the [Metawrap] section."
+        exit 1
+    else
+        echo "Using Conda environment: $METAWRAP_ENV"
+    fi
+    conda activate $METAWRAP_ENV
+    export PATH=${program_paths[Metawrap]}:$PATH
+    META_FASTQ_FILES=$(find "$INPUT_PATH" -type f -name "*.fastq" | paste -sd " " -)
+    META_TEMP_FASTQ_FILES=$(find "$TEMP_FASTQ_PATH" -type f -name "*.fastq" | paste -sd " " -)
+    META_BASE_CMD="metawrap binning -o $DATA_OUTPUT_PATH/metawrap -a $DATA_OUTPUT_PATH/medaka/consensus.fasta --metabat2 --maxbin2 --concoct --single-end"
+    META_FASTQ_CMD="$META_BASE_CMD $META_FASTQ_FILES"
+    META_TEMP_FASTQ_CMD="$META_BASE_CMD $META_TEMP_FASTQ_FILES"
+    if [[ "$run_dorado" == "yes" ]]; then
+        $META_BASE_CMD $DATA_OUTPUT_PATH/dorado/calls.fastq.gz
+    elif [[ "$FILE_TYPE" == "fastq.gz" ]]; then
+        $META_TEMP_FASTQ_CMD $META_TEMP_FASTQ_FILES
+    else
+        $META_FASTQ_CMD $META_FASTQ_FILES
+    fi
+    conda deactivate
+    create_checkpoint "metawrap"
+    echo "Metawrap analysis completed. Results are stored in $DATA_OUTPUT_PATH/metawrap"
+fi
+fi
