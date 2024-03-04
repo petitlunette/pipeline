@@ -1,23 +1,23 @@
-(metawrap_env) lj752@bspc-linux-13:/mnt/data/lj752/tools$ metawrap binning -o /mnt/data/lj752/data/MSc_training/scripting/data_output/metawrap -a /mnt/data/lj752/data/MSc_training/scripting/data_output/medaka/consensus.fasta --metabat2 --maxbin2 --concoct --single-end /mnt/data/lj752/data/MSc_training/scripting/fastq_1.fastq /mnt/data/lj752/data/MSc_training/scripting/fastq_2.fastq /mnt/data/lj752/data/MSc_training/scripting/fastq_4.fastq /mnt/data/lj752/data/MSc_training/scripting/fastq_3.fastq /mnt/data/lj752/data/MSc_training/scripting/fastq_0.fastq                                          
-metawrap binning -o /mnt/data/lj752/data/MSc_training/scripting/data_output/metawrap -a /mnt/data/lj752/data/MSc_training/scripting/data_output/medaka/consensus.fasta --metabat2 --maxbin2 --concoct --single-end /mnt/data/lj752/data/MSc_training/scripting/fastq_1.fastq /mnt/data/lj752/data/MSc_training/scripting/fastq_2.fastq /mnt/data/lj752/data/MSc_training/scripting/fastq_4.fastq /mnt/data/lj752/data/MSc_training/scripting/fastq_3.fastq /mnt/data/lj752/data/MSc_training/scripting/fastq_0.fastq                                                                                                    
-                                                                                                                                                      
-------------------------------------------------------------------------------------------------------------------------                              
------                                           Entered read type: single                                          -----                              
-------------------------------------------------------------------------------------------------------------------------                              
-                                                                                                                                                      
-                                                                                                                                                      
-########################################################################################################################                              
-#####                                     ALIGNING READS TO MAKE COVERAGE FILES                                    #####                              
-########################################################################################################################                              
-                                                                                                                                                      
-Warning: /mnt/data/lj752/data/MSc_training/scripting/data_output/metawrap already exists.                                                             
-rm: cannot remove '/mnt/data/lj752/data/MSc_training/scripting/data_output/metawrap/*checkm': No such file or directory                               
-                                                                                                                                                      
-------------------------------------------------------------------------------------------------------------------------                              
------             Looks like the assembly file is already coppied, but will re-transfer just in case to            -----                              
------                                          avoid truncation problems.                                          -----                              
-------------------------------------------------------------------------------------------------------------------------                              
-                      
+(metawrap_env) lj752@bspc-linux-13:/mnt/data/lj752/tools$ metawrap binning -o /mnt/data/lj752/data/MSc_training/scripting/data_output/metawrap -a /mnt/data/lj752/data/MSc_training/scripting/data_output/medaka/consensus.fasta --metabat2 --maxbin2 --concoct --single-end /mnt/data/lj752/data/MSc_training/scripting/fastq_1.fastq /mnt/data/lj752/data/MSc_training/scripting/fastq_2.fastq /mnt/data/lj752/data/MSc_training/scripting/fastq_4.fastq /mnt/data/lj752/data/MSc_training/scripting/fastq_3.fastq /mnt/data/lj752/data/MSc_training/scripting/fastq_0.fastq 
+metawrap binning -o /mnt/data/lj752/data/MSc_training/scripting/data_output/metawrap -a /mnt/data/lj752/data/MSc_training/scripting/data_output/medaka/consensus.fasta --metabat2 --maxbin2 --concoct --single-end /mnt/data/lj752/data/MSc_training/scripting/fastq_1.fastq /mnt/data/lj752/data/MSc_training/scripting/fastq_2.fastq /mnt/data/lj752/data/MSc_training/scripting/fastq_4.fastq /mnt/data/lj752/data/MSc_training/scripting/fastq_3.fastq /mnt/data/lj752/data/MSc_training/scripting/fastq_0.fastq
+
+------------------------------------------------------------------------------------------------------------------------
+-----                                           Entered read type: single                                          -----
+------------------------------------------------------------------------------------------------------------------------
+
+
+########################################################################################################################
+#####                                     ALIGNING READS TO MAKE COVERAGE FILES                                    #####
+########################################################################################################################
+
+Warning: /mnt/data/lj752/data/MSc_training/scripting/data_output/metawrap already exists.
+rm: cannot remove '/mnt/data/lj752/data/MSc_training/scripting/data_output/metawrap/*checkm': No such file or directory
+
+------------------------------------------------------------------------------------------------------------------------
+-----             Looks like the assembly file is already coppied, but will re-transfer just in case to            -----
+-----                                          avoid truncation problems.                                          -----
+------------------------------------------------------------------------------------------------------------------------
+
 
 ------------------------------------------------------------------------------------------------------------------------
 -----                       Looks like there is a index of the assembly already. Skipping...                       -----
@@ -73,11 +73,11 @@ Output matrix to /mnt/data/lj752/data/MSc_training/scripting/data_output/metawra
 Opening 5 bams
 Consolidating headers
 Processing bam files
-Thread 1 finished: fastq_1.bam with 9654 reads and 240 readsWellMapped
 Thread 0 finished: fastq_0.bam with 9565 reads and 241 readsWellMapped
-Thread 2 finished: fastq_2.bam with 9646 reads and 217 readsWellMapped
-Thread 3 finished: fastq_3.bam with 9632 reads and 241 readsWellMapped
 Thread 4 finished: fastq_4.bam with 9571 reads and 201 readsWellMapped
+Thread 3 finished: fastq_3.bam with 9632 reads and 241 readsWellMapped
+Thread 2 finished: fastq_2.bam with 9646 reads and 217 readsWellMapped
+Thread 1 finished: fastq_1.bam with 9654 reads and 240 readsWellMapped
 Creating depth matrix file: /mnt/data/lj752/data/MSc_training/scripting/data_output/metawrap/work_files/metabat_depth.txt
 Closing most bam files
 Closing last bam file
@@ -144,6 +144,6 @@ metawrap path: /mnt/data/lj752/tools/metaWRAP/bin/metawrap
 ************************************************************************************************************************
 
 
-real	0m2.091s
-user	0m7.610s
-sys	0m0.343s
+real	0m2.029s
+user	0m7.271s
+sys	0m0.422s
