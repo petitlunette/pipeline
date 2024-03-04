@@ -115,7 +115,7 @@ mkdir -p $DATA_OUTPUT_PATH/merqury
 mkdir -p $DATA_OUTPUT_PATH/medaka
 mkdir -p $DATA_OUTPUT_PATH/valet
 mkdir -p $DATA_OUTPUT_PATH/metawrap
-mkdir -p $DATA_OUTPUT_PATH/kraken
+mkdir -p $DATA_OUTPUT_PATH/kraken2
 
  # Ask user if they want to run Dorado for base calling
 read -p "Do you want to run Dorado for base calling? (yes/no): " run_dorado
@@ -276,7 +276,7 @@ if ! check_for_checkpoint "kraken2"; then
     fi
     
     echo "Running Kraken2 analysis using the database $DBNAME..."
-    kraken2 --db "$DBNAME" $DATA_OUTPUT_PATH/medaka/consensus.fasta --output "$DATA_OUTPUT_PATH/kraken2_output.txt" --report "$DATA_OUTPUT_PATH/kraken2_report.txt" 
+    kraken2 --db "$DBNAME" $DATA_OUTPUT_PATH/medaka/consensus.fasta --output $DATA_OUTPUT_PATH/kraken2/kraken2_output.txt --report $DATA_OUTPUT_PATH/kraken2/kraken2_report.txt 
     create_checkpoint "kraken2"
 fi
 
