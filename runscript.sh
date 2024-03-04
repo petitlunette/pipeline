@@ -215,6 +215,39 @@ if ! check_for_checkpoint "valet"; then
     echo "VALET analysis completed. Results are stored in $DATA_OUTPUT_PATH/valet"
     create_checkpoint "valet"
 fi
+
+
+
+
+#VALET2
+# VALET for misassembly detection, placed right after Medaka and before MetaWRAP
+if ! check_for_checkpoint "valet"; then
+    echo "Running VALET for misassembly detection..."
+    export PATH=${program_paths[VALET]}:$PATH
+    VALET_OUTPUT_DIR="$DATA_OUTPUT_PATH/valet"
+    mkdir -p "$VALET_OUTPUT_DIR"
+    
+    # Use the consensus.fasta file produced by Medaka
+    ASSEMBLY_FILE="$DATA_OUTPUT_PATH/medaka/consensus.fasta"
+    
+    # Assuming the ONT reads are in fastq format and were base-called by Dorado, if 'run_dorado' is yes.
+    # Otherwise, adjust the READS_PATH as necessary to point to your specific reads location
+    if [[ "$run_dorado" == "yes" ]]; then
+        READS_PATH="$DATA_OUTPUT_PATH/dorado/calls.fastq" # Path to Dorado output
+    else
+        # If not using Dorado, adjust to where your ONT reads are stored.
+        READS_PATH="$INPUT_PATH/*.$FILE_TYPE" # Adjust this path as needed
+    fi
+
+    ${PYTHON_PATH} ${program_paths[VALET]}/valet.py -a $ASSEMBLY_FILE -q $READS_PATH --assembly-names reference -o $VALET_OUTPUT_DIR
+    
+    echo "VALET analysis completed. Results are stored in $VALET_OUTPUT_DIR"
+    create_checkpoint "valet"
+fi
+
+
+
+
         
 if ! check_for_checkpoint "metawrap"; then
     echo "Running MetaWrap..."
