@@ -1,8 +1,8 @@
 even calling the filenames directly did not work
-python /mnt/data/lj752/tools/VALET/src/py/valet.py -a /mnt/data/lj752/data/MSc_training/scripting/data_output/medaka/consensus.fasta -q -1 /mnt/data/lj752/data/MSc_training/scripting/fastq_0.fastq,/mnt/data/lj752/data/MSc_training/scripting/fastq_1.fastq,/mnt/data/lj752/data/MSc_training/scripting/fastq_2.fastq,/mnt/data/lj752/data/MSc_training/scripting/fastq_3.fastq,/mnt/data/lj752/data/MSc_training/scripting/fastq_4.fastq -o /mnt/data/lj752/data/MSc_training/scripting/data_output/valet
+python /mnt/data/lj752/tools/VALET/src/py/valet.py -a /mnt/data/lj752/data/MSc_training/scripting/data_output/medaka/consensus.fasta -r /mnt/data/lj752/data/MSc_training/scripting/fastq_0.fastq,/mnt/data/lj752/data/MSc_training/scripting/fastq_1.fastq,/mnt/data/lj752/data/MSc_training/scripting/fastq_2.fastq,/mnt/data/lj752/data/MSc_training/scripting/fastq_3.fastq,/mnt/data/lj752/data/MSc_training/scripting/fastq_4.fastq -o /mnt/data/lj752/data/MSc_training/scripting/data_output/valet
 
 this is what the orignal script command does
-python /mnt/data/lj752/tools/VALET/src/py/valet.py -a /mnt/data/lj752/data/MSc_training/scripting/data_output/medaka/consensus.fasta -q -1 /mnt/data/lj752/data/MSc_training/scripting/ -o /mnt/data/lj752/data/MSc_training/scripting/data_output/valet
+python /mnt/data/lj752/tools/VALET/src/py/valet.py -a /mnt/data/lj752/data/MSc_training/scripting/data_output/medaka/consensus.fasta -r /mnt/data/lj752/data/MSc_training/scripting/ -o /mnt/data/lj752/data/MSc_training/scripting/data_output/valet
 
 here is an individual:
 python /mnt/data/lj752/tools/VALET/src/py/valet.py -a /mnt/data/lj752/data/MSc_training/scripting/data_output/medaka/consensus.fasta -r /mnt/data/lj752/data/MSc_training/scripting/fastq_0.fastq -o /mnt/data/lj752/data/MSc_training/scripting/data_output/valet
