@@ -220,11 +220,10 @@ if ! check_for_checkpoint "valet"; then
     echo "VALET analysis completed. Results are stored in $DATA_OUTPUT_PATH/valet"
     create_checkpoint "valet"
 fi
-        /mnt/data/lj752/data/MSc_training/scripting/
+
 if ! check_for_checkpoint "metawrap"; then
     echo "Running MetaWrap..."
     eval "$(conda shell.bash hook)"
-    export PATH=${program_paths[Metawrap]}:$PATH
     METAWRAP_ENV=$(get_config_value "Metawrap" "conda_env")
     if [ -z "$METAWRAP_ENV" ]; then
         echo "Conda environment name not found in config.ini. Please specify it under the [Metawrap] section."
@@ -233,6 +232,8 @@ if ! check_for_checkpoint "metawrap"; then
         echo "Using Conda environment: $METAWRAP_ENV"
     fi
     conda activate $METAWRAP_ENV
+    export PATH=${program_paths[Metawrap]}:$PATH
+    TEMP_FASTQ_PATH="$INPUT_PATH/temp"
     META_FASTQ_FILES=$(find "$INPUT_PATH" -type f -name "*.fastq" | paste -sd " " -)
     META_TEMP_FASTQ_FILES=$(find "$TEMP_FASTQ_PATH" -type f -name "*.fastq" | paste -sd " " -)
     META_BASE_CMD="metawrap binning -o $DATA_OUTPUT_PATH/metawrap -a $DATA_OUTPUT_PATH/medaka/consensus.fasta --metabat2 --maxbin2 --concoct --single-end"
@@ -251,7 +252,6 @@ if ! check_for_checkpoint "metawrap"; then
 fi
 fi
     
-
 #Kraken2 
 
 if ! check_for_checkpoint "kraken2"; then
