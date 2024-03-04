@@ -205,22 +205,22 @@ fi
 if ! check_for_checkpoint "valet"; then
     echo "Running VALET for misassembly detection..."
     export PATH=${program_paths[Valet]}:$PATH
-    BASE_CMD="${PYTHON_PATH} ${program_paths[VALET]}/valet.py -a $DATA_OUTPUT/medaka/consensus.fasta -r"
+    BASE_CMD="${PYTHON_PATH} ${program_paths[VALET]}/valet.py -a $DATA_OUTPUT_PATH/medaka/consensus.fasta -r"
     FASTQ_FILES=$(find "$INPUT_PATH" -type f -name "*.fastq" | paste -sd "," -)
     TEMP_FASTQ_FILES=$(find "$TEMP_FASTQ_PATH" -type f -name "*.fastq" | paste -sd "," -)
     FASTQ_CMD="$BASE_CMD $FASTQ_FILES"
     TEMP_FASTQ_CMD="$BASE_CMD $TEMP_FASTQ_FILES"
     if [[ "$run_dorado" == "yes" ]]; then
-        $BASE_CMD $DATA_OUTPUT_PATH/dorado/calls.fastq  -o $DATA_OUTPUT/valet
+        $BASE_CMD $DATA_OUTPUT_PATH/dorado/calls.fastq  -o $DATA_OUTPUT_PATH/valet
     elif [[ "$FILE_TYPE" == "fastq.gz" ]]; then
         $TEMP_FASTQ_CMD -o $DATA_OUTPUT_PATH/valet
     else
-        $FASTQ_CMD -o $DATA_OUTPUT/valet
+        $FASTQ_CMD -o $DATA_OUTPUT_PATH/valet
     fi
     echo "VALET analysis completed. Results are stored in $DATA_OUTPUT_PATH/valet"
     create_checkpoint "valet"
 fi
-        
+        /mnt/data/lj752/data/MSc_training/scripting/
 if ! check_for_checkpoint "metawrap"; then
     echo "Running MetaWrap..."
     eval "$(conda shell.bash hook)"
@@ -233,10 +233,17 @@ if ! check_for_checkpoint "metawrap"; then
         echo "Using Conda environment: $METAWRAP_ENV"
     fi
     conda activate $METAWRAP_ENV
+    META_FASTQ_FILES=$(find "$INPUT_PATH" -type f -name "*.fastq" | paste -sd " " -)
+    META_TEMP_FASTQ_FILES=$(find "$TEMP_FASTQ_PATH" -type f -name "*.fastq" | paste -sd " " -)
+    META_BASE_CMD="metawrap binning -o $DATA_OUTPUT_PATH/metawrap -a $DATA_OUTPUT_PATH/medaka/consensus.fasta --metabat2 --maxbin2 --concoct --single-end"
+    META_FASTQ_CMD="$META_BASE_CMD $META_FASTQ_FILES"
+    META_TEMP_FASTQ_CMD="$META_BASE_CMD $META_TEMP_FASTQ_FILES"
     if [[ "$run_dorado" == "yes" ]]; then
-        metawrap binning -o $DATA_OUTPUT_PATH/metawrap -a $DATA_OUTPUT_PATH/medaka/consensus.fasta --metabat2 --maxbin2 --concoct --single-end $DATA_OUTPUT_PATH/dorado/calls.fastq.gz
+        $META_BASE_CMD $DATA_OUTPUT_PATH/dorado/calls.fastq.gz
+    elif [[ "$FILE_TYPE" == "fastq.gz" ]]; then
+        $META_TEMP_FASTQ_CMD $META_TEMP_FASTQ_FILES
     else
-        metawrap binning -o $DATA_OUTPUT_PATH/metawrap -a $DATA_OUTPUT_PATH/medaka/consensus.fasta --metabat2 --maxbin2 --concoct --single-end $INPUT_PATH
+        $META_FASTQ_CMD $META_FASTQ_FILES
     fi
     conda deactivate
     create_checkpoint "metawrap"
