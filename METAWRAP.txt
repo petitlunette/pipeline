@@ -1,39 +1,62 @@
-Running MetaWrap...
-Using Conda environment: metawrap_env
-find: ‘’: No such file or directory
-metawrap binning -o /mnt/data/lj752/data/MSc_training/scripting/data_output/metawrap -a /mnt/data/lj752/data/MSc_training/scripting/data_output/medaka/consensus.fasta --metabat2 --maxbin2 --concoct --single-end /mnt/data/lj752/data/MSc_training/scripting/fastq_1.fastq /mnt/data/lj752/data/MSc_training/scripting/fastq_2.fastq /mnt/data/lj752/data/MSc_training/scripting/fastq_4.fastq /mnt/data/lj752/data/MSc_training/scripting/fastq_3.fastq /mnt/data/lj752/data/MSc_training/scripting/fastq_0.fastq /mnt/data/lj752/data/MSc_training/scripting/fastq_1.fastq /mnt/data/lj752/data/MSc_training/scripting/fastq_2.fastq /mnt/data/lj752/data/MSc_training/scripting/fastq_4.fastq /mnt/data/lj752/data/MSc_training/scripting/fastq_3.fastq /mnt/data/lj752/data/MSc_training/scripting/fastq_0.fastq
+(metawrap_env) lj752@bspc-linux-13:/mnt/data/lj752/tools$ metawrap binning -o /mnt/data/lj752/data/MSc_training/scripting/data_output/metawrap -a /mnt/data/lj752/data/MSc_training/scripting/data_output/medaka/consensus.fasta --metabat2 --maxbin2 --concoct --single-end /mnt/data/lj752/data/MSc_training/scripting/fastq_1.fastq /mnt/data/lj752/data/MSc_training/scripting/fastq_2.fastq /mnt/data/lj752/data/MSc_training/scripting/fastq_4.fastq /mnt/data/lj752/data/MSc_training/scripting/fastq_3.fastq /mnt/data/lj752/data/MSc_training/scripting/fastq_0.fastq                                          
+metawrap binning -o /mnt/data/lj752/data/MSc_training/scripting/data_output/metawrap -a /mnt/data/lj752/data/MSc_training/scripting/data_output/medaka/consensus.fasta --metabat2 --maxbin2 --concoct --single-end /mnt/data/lj752/data/MSc_training/scripting/fastq_1.fastq /mnt/data/lj752/data/MSc_training/scripting/fastq_2.fastq /mnt/data/lj752/data/MSc_training/scripting/fastq_4.fastq /mnt/data/lj752/data/MSc_training/scripting/fastq_3.fastq /mnt/data/lj752/data/MSc_training/scripting/fastq_0.fastq                                                                                                    
+                                                                                                                                                      
+------------------------------------------------------------------------------------------------------------------------                              
+-----                                           Entered read type: single                                          -----                              
+------------------------------------------------------------------------------------------------------------------------                              
+                                                                                                                                                      
+                                                                                                                                                      
+########################################################################################################################                              
+#####                                     ALIGNING READS TO MAKE COVERAGE FILES                                    #####                              
+########################################################################################################################                              
+                                                                                                                                                      
+Warning: /mnt/data/lj752/data/MSc_training/scripting/data_output/metawrap already exists.                                                             
+rm: cannot remove '/mnt/data/lj752/data/MSc_training/scripting/data_output/metawrap/*checkm': No such file or directory                               
+                                                                                                                                                      
+------------------------------------------------------------------------------------------------------------------------                              
+-----             Looks like the assembly file is already coppied, but will re-transfer just in case to            -----                              
+-----                                          avoid truncation problems.                                          -----                              
+------------------------------------------------------------------------------------------------------------------------                              
+                      
+
+------------------------------------------------------------------------------------------------------------------------
+-----                       Looks like there is a index of the assembly already. Skipping...                       -----
+------------------------------------------------------------------------------------------------------------------------
 
 
-this is the script for that portion:
-if ! check_for_checkpoint "metawrap"; then
-    echo "Running MetaWrap..."
-    eval "$(conda shell.bash hook)"
-    METAWRAP_ENV=$(get_config_value "Metawrap" "conda_env")
-    if [ -z "$METAWRAP_ENV" ]; then
-        echo "Conda environment name not found in config.ini. Please specify it under the [Metawrap] section."
-        exit 1
-    else
-        echo "Using Conda environment: $METAWRAP_ENV"
-    fi
-    conda activate $METAWRAP_ENV
-    export PATH=${program_paths[Metawrap]}:$PATH
-    META_FASTQ_FILES=$(find "$INPUT_PATH" -type f -name "*.fastq" | paste -sd " " -)
-    META_TEMP_FASTQ_FILES=$(find "$TEMP_FASTQ_PATH" -type f -name "*.fastq" | paste -sd " " -)
-    META_BASE_CMD="metawrap binning -o $DATA_OUTPUT_PATH/metawrap -a $DATA_OUTPUT_PATH/medaka/consensus.fasta --metabat2 --maxbin2 --concoct --single-end"
-    META_FASTQ_CMD="$META_BASE_CMD $META_FASTQ_FILES"
-    META_TEMP_FASTQ_CMD="$META_BASE_CMD $META_TEMP_FASTQ_FILES"
-    if [[ "$run_dorado" == "yes" ]]; then
-        $META_BASE_CMD $DATA_OUTPUT_PATH/dorado/calls.fastq.gz
-    elif [[ "$FILE_TYPE" == "fastq.gz" ]]; then
-        $META_TEMP_FASTQ_CMD $META_TEMP_FASTQ_FILES
-    else
-        $META_FASTQ_CMD $META_FASTQ_FILES
-    fi
-    conda deactivate
-    create_checkpoint "metawrap"
-    echo "Metawrap analysis completed. Results are stored in $DATA_OUTPUT_PATH/metawrap"
-fi
-fi
+------------------------------------------------------------------------------------------------------------------------
+-----                              skipping aligning fastq_1 reads to assembly because                             -----
+-----           /mnt/data/lj752/data/MSc_training/scripting/data_output/metawrap/work_files/fastq_1.bam            -----
+-----                                               already exists.                                                -----
+------------------------------------------------------------------------------------------------------------------------
+
+
+------------------------------------------------------------------------------------------------------------------------
+-----                              skipping aligning fastq_2 reads to assembly because                             -----
+-----           /mnt/data/lj752/data/MSc_training/scripting/data_output/metawrap/work_files/fastq_2.bam            -----
+-----                                               already exists.                                                -----
+------------------------------------------------------------------------------------------------------------------------
+
+
+------------------------------------------------------------------------------------------------------------------------
+-----                              skipping aligning fastq_4 reads to assembly because                             -----
+-----           /mnt/data/lj752/data/MSc_training/scripting/data_output/metawrap/work_files/fastq_4.bam            -----
+-----                                               already exists.                                                -----
+------------------------------------------------------------------------------------------------------------------------
+
+
+------------------------------------------------------------------------------------------------------------------------
+-----                              skipping aligning fastq_3 reads to assembly because                             -----
+-----           /mnt/data/lj752/data/MSc_training/scripting/data_output/metawrap/work_files/fastq_3.bam            -----
+-----                                               already exists.                                                -----
+------------------------------------------------------------------------------------------------------------------------
+
+
+------------------------------------------------------------------------------------------------------------------------
+-----                              skipping aligning fastq_0 reads to assembly because                             -----
+-----           /mnt/data/lj752/data/MSc_training/scripting/data_output/metawrap/work_files/fastq_0.bam            -----
+-----                                               already exists.                                                -----
+------------------------------------------------------------------------------------------------------------------------
 
 
 ########################################################################################################################
@@ -45,21 +68,82 @@ fi
 -----                                          making contig depth file...                                         -----
 ------------------------------------------------------------------------------------------------------------------------
 
-/mnt/data/lj752/tools/metaWRAP/bin/metawrap-modules/binning.sh: line 284: jgi_summarize_bam_contig_depths: command not found
+Output depth matrix to /mnt/data/lj752/data/MSc_training/scripting/data_output/metawrap/work_files/metabat_depth.txt
+Output matrix to /mnt/data/lj752/data/MSc_training/scripting/data_output/metawrap/work_files/metabat_depth.txt
+Opening 5 bams
+Consolidating headers
+Processing bam files
+Thread 1 finished: fastq_1.bam with 9654 reads and 240 readsWellMapped
+Thread 0 finished: fastq_0.bam with 9565 reads and 241 readsWellMapped
+Thread 2 finished: fastq_2.bam with 9646 reads and 217 readsWellMapped
+Thread 3 finished: fastq_3.bam with 9632 reads and 241 readsWellMapped
+Thread 4 finished: fastq_4.bam with 9571 reads and 201 readsWellMapped
+Creating depth matrix file: /mnt/data/lj752/data/MSc_training/scripting/data_output/metawrap/work_files/metabat_depth.txt
+Closing most bam files
+Closing last bam file
+Finished
+
+------------------------------------------------------------------------------------------------------------------------
+-----                                       Starting binning with metaBAT2...                                      -----
+------------------------------------------------------------------------------------------------------------------------
+
+MetaBAT 2 (v2.12.1) using minContig 1500, minCV 1.0, minCVSum 1.0, maxP 95%, minS 60, and maxEdges 200. 
+0 bins (0 bases in total) formed.
+
+------------------------------------------------------------------------------------------------------------------------
+-----                               metaBAT2 finished successfully, and found 0 bins!                              -----
+------------------------------------------------------------------------------------------------------------------------
+
+
+########################################################################################################################
+#####                                                RUNNING MAXBIN2                                               #####
+########################################################################################################################
+
+
+------------------------------------------------------------------------------------------------------------------------
+-----                                          making contig depth file...                                         -----
+------------------------------------------------------------------------------------------------------------------------
+
+Output depth matrix to /mnt/data/lj752/data/MSc_training/scripting/data_output/metawrap/work_files/mb2_master_depth.txt
+Calculating intra contig depth variance
+Output matrix to /mnt/data/lj752/data/MSc_training/scripting/data_output/metawrap/work_files/mb2_master_depth.txt
+Opening 5 bams
+Consolidating headers
+Processing bam files
+Thread 1 finished: fastq_1.bam with 9654 reads and 240 readsWellMapped
+Thread 2 finished: fastq_2.bam with 9646 reads and 217 readsWellMapped
+Thread 4 finished: fastq_4.bam with 9571 reads and 201 readsWellMapped
+Thread 0 finished: fastq_0.bam with 9565 reads and 241 readsWellMapped
+Thread 3 finished: fastq_3.bam with 9632 reads and 241 readsWellMapped
+Creating depth matrix file: /mnt/data/lj752/data/MSc_training/scripting/data_output/metawrap/work_files/mb2_master_depth.txt
+Closing most bam files
+Closing last bam file
+Finished
+
+------------------------------------------------------------------------------------------------------------------------
+-----                    split master contig depth file into individual files for maxbin2 input                    -----
+------------------------------------------------------------------------------------------------------------------------
+
+processing fastq_0.bam depth file...
+processing fastq_1.bam depth file...
+processing fastq_2.bam depth file...
+processing fastq_3.bam depth file...
+processing fastq_4.bam depth file...
+/mnt/data/lj752/tools/metaWRAP/bin/metawrap-modules/binning.sh: line 350: run_MaxBin.pl: command not found
+
+------------------------------------------------------------------------------------------------------------------------
+-----             looks like our default perl libraries are not the conda ones. Manually setting perl5             -----
+-----                                              library directory                                               -----
+------------------------------------------------------------------------------------------------------------------------
+
+metawrap path: /mnt/data/lj752/tools/metaWRAP/bin/metawrap
 
 ************************************************************************************************************************
-*****                         Something went wrong with making contig depth file. Exiting.                         *****
+*****             /mnt/data/lj752/tools/metaWRAP/lib/perl5/site_perl/5.22.0 does not exixt. Cannot set             *****
+*****                                  manual path to perl5 libraries. Exiting...                                  *****
 ************************************************************************************************************************
 
 
-
-
-
-Packages:
-MetaBAT2
-MaxBin2
-CONCOCT
-CheckM
-Bowtie2
-SAMtools
-QUAST
+real	0m2.091s
+user	0m7.610s
+sys	0m0.343s
