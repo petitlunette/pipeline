@@ -185,10 +185,11 @@ if ! check_for_checkpoint "medaka"; then
     source $VIRTUAL_ENV_PATH
     export PATH=${program_paths[Medaka]}:$PATH
     THREADS=$(get_config_value "Data" "threads")
+    TEMP_FASTQ_PATH="$INPUT_PATH/temp"
     if [[ "$run_dorado" == "yes" ]]; then
         medaka_consensus -i $DATA_OUTPUT_PATH/dorado/calls.fastq -d $DATA_OUTPUT_PATH/flye/assembly.fasta -o $DATA_OUTPUT_PATH/medaka -t $THREADS
     elif [[ "$FILE_TYPE" == "fastq.gz" ]]; then
-        mkdir -p $TEMP_FASTQ_PATH
+        mkdir -p "$TEMP_FASTQ_PATH"
         for gz in $INPUT_PATH/*.fastq.gz; do
             gzip -dkc "$gz" > "$TEMP_FASTQ_PATH/$(basename "${gz%.*}")"
         done
@@ -209,7 +210,7 @@ if ! check_for_checkpoint "valet"; then
     elif [[ "$FILE_TYPE" == "fastq.gz" ]]; then
         ${PYTHON_PATH} ${program_paths[VALET]}/valet.py -a $DATA_OUTPUT_PATH/medaka/consensus.fasta -q -1 $TEMP_FASTQ_PATH/*fastq  --assembly-names reference -o $DATA_OUTPUT_PATH/valet
     else
-        ${PYTHON_PATH} ${program_paths[VALET]}/valet.py -a $DATA_OUTPUT_PATH/medaka/consensus.fasta -q -1 $INPUT_PATH/*$FILE_TYPE  --assembly-names reference -o $DATA_OUTPUT_PATH/valet
+        ${PYTHON_PATH} ${program_paths[VALET]}/valet.py -a $DATA_OUTPUT_PATH/medaka/consensus.fasta -q -1 $INPUT_PATH/  --assembly-names reference -o $DATA_OUTPUT_PATH/valet
     fi
     echo "VALET analysis completed. Results are stored in $DATA_OUTPUT_PATH/valet"
     create_checkpoint "valet"
