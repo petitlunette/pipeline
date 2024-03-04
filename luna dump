@@ -1,5 +1,6 @@
 # Directory containing your FASTQ files
 FASTQ_DIR="/mnt/data/lj752/data/MSc_training/scripting"
+$INPUT_FILE
 
 # Output directory for VALET
 OUTPUT_DIR="/mnt/data/lj752/data/MSc_training/scripting/data_output/valet"
