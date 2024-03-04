@@ -1,0 +1,44 @@
+Here is what runs with the current script:
+
+Running MetaWrap...
+Using Conda environment: metawrap_env
+metawrap binning -o /mnt/data/lj752/data/MSc_training/scripting/data_output/metawrap -a /mnt/data/lj752/data/MSc_training/scripting/data_output/medaka/consensus.fasta --metabat2 --maxbin2 --concoct --single-end /mnt/data/lj752/data/MSc_training/scripting
+
+------------------------------------------------------------------------------------------------------------------------
+-----                                           Entered read type: single                                          -----
+------------------------------------------------------------------------------------------------------------------------
+
+
+------------------------------------------------------------------------------------------------------------------------
+-----               Unable to find read files in format *.fastq (for single-end or interleaved reads)              -----
+------------------------------------------------------------------------------------------------------------------------
+
+
+Usage: metaWRAP binning [options] -a assembly.fa -o output_dir readsA_1.fastq readsA_2.fastq ... [readsX_1.fastq readsX_2.fastq]
+Note1: Make sure to provide all your separately replicate read files, not the joined file.
+Note2: You may provide single end or interleaved reads as well with the use of the correct option
+Note3: If the output already has the .bam alignments files from previous runs, the module will skip re-aligning the reads
+
+Options:
+
+	-a STR          metagenomic assembly file
+	-o STR          output directory
+	-t INT          number of threads (default=1)
+	-m INT		amount of RAM available (default=4)
+	-l INT		minimum contig length to bin (default=1000bp). Note: metaBAT will default to 1500bp minimum
+
+	--metabat2      bin contigs with metaBAT2
+	--metabat1	bin contigs with the original metaBAT
+	--maxbin2	bin contigs with MaxBin2
+	--concoct	bin contigs with CONCOCT
+
+	--universal	use universal marker genes instead of bacterial markers in MaxBin2 (improves Archaea binning)
+	--run-checkm	immediately run CheckM on the bin results (requires 40GB+ of memory)
+	--single-end	non-paired reads mode (provide *.fastq files)
+	--interleaved	the input read files contain interleaved paired-end reads
+
+
+real	0m0.221s
+user	0m0.046s
+sys	0m0.015s
+Metawrap analysis completed. Results are stored in /mnt/data/lj752/data/MSc_training/scripting/data_output/metawrap
