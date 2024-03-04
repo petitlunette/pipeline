@@ -1,0 +1,21 @@
+# Directory containing your FASTQ files
+FASTQ_DIR="/mnt/data/lj752/data/MSc_training/scripting"
+
+# Output directory for VALET
+OUTPUT_DIR="/mnt/data/lj752/data/MSc_training/scripting/data_output/valet"
+
+# Assembly fasta file
+ASSEMBLY_FASTA="/mnt/data/lj752/data/MSc_training/scripting/data_output/medaka/consensus.fasta"
+
+# Start building the command
+CMD="python /mnt/data/lj752/tools/VALET/src/py/valet.py -a $ASSEMBLY_FASTA -q -1"
+
+# Find all FASTQ files and append them to the command
+FASTQ_FILES=$(find "$FASTQ_DIR" -type f -name "*.fastq" -or -name "*.fastq.gz" | paste -sd "," -)
+CMD="$CMD $FASTQ_FILES"
+
+# Specify the output directory
+CMD="$CMD -o $OUTPUT_DIR"
+
+# Print the command
+echo $CMD
