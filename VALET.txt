@@ -3,3 +3,71 @@ python /mnt/data/lj752/tools/VALET/src/py/valet.py -a /mnt/data/lj752/data/MSc_t
 
 this is what the orignal script command does
 python /mnt/data/lj752/tools/VALET/src/py/valet.py -a /mnt/data/lj752/data/MSc_training/scripting/data_output/medaka/consensus.fasta -q -1 /mnt/data/lj752/data/MSc_training/scripting/ -o /mnt/data/lj752/data/MSc_training/scripting/data_output/valet
+
+
+here is the full error;
+ERROR:	 You need to provide reads
+Usage: valet.py [options]
+
+Options:
+  -h, --help            show this help message and exit
+  -a FILE, --assembly-fasta=FILE
+                        Candidate assembly files
+  --assembly-names=ASSEMBLY_NAMES
+                        Names for the different assemblies.
+  -r FILE, --reads=FILE
+                        First Read File
+  -1 FIRST_MATES, --1=FIRST_MATES
+                        Fastq filenames separated by commas that contain the
+                        first mates.
+  -2 SECOND_MATES, --2=SECOND_MATES
+                        Fastq filenames separated by commas that contain the
+                        second mates.
+  -c COVERAGE_FILE, --coverage-file=COVERAGE_FILE
+                        Assembly created per-contig coverage file
+  -i CONFIG_FILE, --config-file=CONFIG_FILE
+                        Config file with preset parameters.
+  -o OUTPUT_DIR, --output-dir=OUTPUT_DIR
+                        Output directory
+  -w WINDOW_SIZE, --window-size=WINDOW_SIZE
+                        Sliding window size when determining misassemblies.
+  -f, --fasta           if set, input reads are fasta format (by default,
+                        reads are FASTQ).
+  -q, --fastq           if set, input reads are fastq format.
+  -p THREADS, --threads=THREADS
+                        Number of threads
+  -I MIN_INSERT_SIZE, --minins=MIN_INSERT_SIZE
+                        Min insert sizes for mate pairs separated by commas.
+  -X MAX_INSERT_SIZE, --maxins=MAX_INSERT_SIZE
+                        Max insert sizes for mate pairs separated by commas.
+  -n ORIENTATION, --orientation=ORIENTATION
+                        Orientation of the mates.
+  -m MU, --mu=MU        average mate pair insert sizes.
+  -t SIGMA, --sigma=SIGMA
+                        standard deviation of mate pair insert sizes.
+  -x MAX_ALIGNMENTS, --max-alignments=MAX_ALIGNMENTS
+                        bowtie2 parameter to set the max number of alignments.
+  -e EMAIL, --email=EMAIL
+                        Email to notify when job completes
+  -g MIN_COVERAGE, --min-coverage=MIN_COVERAGE
+                        Minimum average coverage to run misassembly detection.
+  -l COVERAGE_MULTIPLIER, --coverage-multiplier=COVERAGE_MULTIPLIER
+                        When binning by coverage, the new high = high + high *
+                        multiplier
+  -s MIN_SUSPICIOUS_REGIONS, --min-suspicious=MIN_SUSPICIOUS_REGIONS
+                        Minimum number of overlapping flagged miassemblies to
+                        mark region as suspicious.
+  -d SUSPICIOUS_FLANK_SIZE, --suspicious-flank-size=SUSPICIOUS_FLANK_SIZE
+                        Mark region as suspicious if multiple signatures occur
+                        within this window size.
+  -z MIN_CONTIG_LENGTH, --min-contig-length=MIN_CONTIG_LENGTH
+                        Ignore contigs smaller than this length.
+  -b IGNORE_END_DISTANCES, --ignore-ends=IGNORE_END_DISTANCES
+                        Ignore flagged regions within b bps from the ends of
+                        the contigs.
+  -k BREAKPOINTS_BIN, --breakpoint-bin=BREAKPOINTS_BIN
+                        Bin sized used to find breakpoints.
+  --orf-file=ORF_FILE   gff formatted file containing orfs
+  --kmer=KMER_LENGTH    kmer length used for abundance estimation
+  --skip-reapr          
+  --debug               
