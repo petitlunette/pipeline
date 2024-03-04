@@ -71,3 +71,6 @@ Options:
   --kmer=KMER_LENGTH    kmer length used for abundance estimation
   --skip-reapr          
   --debug               
+
+here is an individual:
+python /mnt/data/lj752/tools/VALET/src/py/valet.py -a /mnt/data/lj752/data/MSc_training/scripting/data_output/medaka/consensus.fasta -q -1 /mnt/data/lj752/data/MSc_training/scripting/fastq_0.fastq -o /mnt/data/lj752/data/MSc_training/scripting/data_output/valet
