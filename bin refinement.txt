@@ -1,0 +1,1 @@
+metawrap bin_refinement -o /mnt/data/lj752/data/MSc_training/scripting/data_output/metawrap/final_bins -A /mnt/data/lj752/data/MSc_training/scripting/data_output/metawrap/concoct_bins -B /mnt/data/lj752/data/MSc_training/scripting/data_output/metawrap/maxbin2_bins -C /mnt/data/lj752/data/MSc_training/scripting/data_output/metawrap/metabat2_bins
