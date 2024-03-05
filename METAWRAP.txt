@@ -1,141 +1,6 @@
-blas 2.5 mkl
-blast 2.6.0
-bmtagger 3.101
-checkm-genome 1.0.12
-fastqc 0.11.8
-krona 2.7
-maxbin2 2.2.6
-megahit 1.1.3
-perl-bioperl
-prokka 1.*
-r-ggplot2 3.1.0
-r-reshape2
-r-recommended 3.5.1
-samtools 1.9
-seaborn 0.9.0
-spades 3.13.0
-taxator-tk 1.3.3e
-trim-galore 0.5.0
+#maxbin2
 
-conda install -c bioconda -c conda-forge \
-    blas=2.5 \
-    mkl \
-    blast=2.6.0 \
-    bmtagger=3.101 \
-    checkm-genome=1.0.12 \
-    fastqc=0.11.8 \
-    krona=2.7 \
-    maxbin2=2.2.6 \
-    megahit=1.1.3 \
-    perl-bioperl \
-    prokka=1.* \
-    r-ggplot2=3.1.0 \
-    r-reshape2 \
-    r-recommended=3.5.1 \
-    samtools=1.9 \
-    seaborn=0.9.0 \
-    spades=3.13.0 \
-    taxator-tk=1.3.3e \
-    trim-galore=0.5.0
-
-
-
-(metawrap_env) lj752@bspc-linux-13:/mnt/data/lj752/tools$ metawrap binning -o /mnt/data/lj752/data/MSc_training/scripting/data_output/metawrap -a /mnt/data/lj752/data/MSc_training/scripting/data_output/medaka/consensus.fasta --metabat2 --maxbin2 --concoct --single-end /mnt/data/lj752/data/MSc_training/scripting/fastq_1.fastq /mnt/data/lj752/data/MSc_training/scripting/fastq_2.fastq /mnt/data/lj752/data/MSc_training/scripting/fastq_4.fastq /mnt/data/lj752/data/MSc_training/scripting/fastq_3.fastq /mnt/data/lj752/data/MSc_training/scripting/fastq_0.fastq 
-metawrap binning -o /mnt/data/lj752/data/MSc_training/scripting/data_output/metawrap -a /mnt/data/lj752/data/MSc_training/scripting/data_output/medaka/consensus.fasta --metabat2 --maxbin2 --concoct --single-end /mnt/data/lj752/data/MSc_training/scripting/fastq_1.fastq /mnt/data/lj752/data/MSc_training/scripting/fastq_2.fastq /mnt/data/lj752/data/MSc_training/scripting/fastq_4.fastq /mnt/data/lj752/data/MSc_training/scripting/fastq_3.fastq /mnt/data/lj752/data/MSc_training/scripting/fastq_0.fastq
-
-------------------------------------------------------------------------------------------------------------------------
------                                           Entered read type: single                                          -----
-------------------------------------------------------------------------------------------------------------------------
-
-
-########################################################################################################################
-#####                                     ALIGNING READS TO MAKE COVERAGE FILES                                    #####
-########################################################################################################################
-
-Warning: /mnt/data/lj752/data/MSc_training/scripting/data_output/metawrap already exists.
-rm: cannot remove '/mnt/data/lj752/data/MSc_training/scripting/data_output/metawrap/*checkm': No such file or directory
-
-------------------------------------------------------------------------------------------------------------------------
------             Looks like the assembly file is already coppied, but will re-transfer just in case to            -----
------                                          avoid truncation problems.                                          -----
-------------------------------------------------------------------------------------------------------------------------
-
-
-------------------------------------------------------------------------------------------------------------------------
------                       Looks like there is a index of the assembly already. Skipping...                       -----
-------------------------------------------------------------------------------------------------------------------------
-
-
-------------------------------------------------------------------------------------------------------------------------
------                              skipping aligning fastq_1 reads to assembly because                             -----
------           /mnt/data/lj752/data/MSc_training/scripting/data_output/metawrap/work_files/fastq_1.bam            -----
------                                               already exists.                                                -----
-------------------------------------------------------------------------------------------------------------------------
-
-
-------------------------------------------------------------------------------------------------------------------------
------                              skipping aligning fastq_2 reads to assembly because                             -----
------           /mnt/data/lj752/data/MSc_training/scripting/data_output/metawrap/work_files/fastq_2.bam            -----
------                                               already exists.                                                -----
-------------------------------------------------------------------------------------------------------------------------
-
-
-------------------------------------------------------------------------------------------------------------------------
------                              skipping aligning fastq_4 reads to assembly because                             -----
------           /mnt/data/lj752/data/MSc_training/scripting/data_output/metawrap/work_files/fastq_4.bam            -----
------                                               already exists.                                                -----
-------------------------------------------------------------------------------------------------------------------------
-
-
-------------------------------------------------------------------------------------------------------------------------
------                              skipping aligning fastq_3 reads to assembly because                             -----
------           /mnt/data/lj752/data/MSc_training/scripting/data_output/metawrap/work_files/fastq_3.bam            -----
------                                               already exists.                                                -----
-------------------------------------------------------------------------------------------------------------------------
-
-
-------------------------------------------------------------------------------------------------------------------------
------                              skipping aligning fastq_0 reads to assembly because                             -----
------           /mnt/data/lj752/data/MSc_training/scripting/data_output/metawrap/work_files/fastq_0.bam            -----
------                                               already exists.                                                -----
-------------------------------------------------------------------------------------------------------------------------
-
-
-########################################################################################################################
-#####                                               RUNNING METABAT2                                               #####
-########################################################################################################################
-
-
-------------------------------------------------------------------------------------------------------------------------
------                                          making contig depth file...                                         -----
-------------------------------------------------------------------------------------------------------------------------
-
-Output depth matrix to /mnt/data/lj752/data/MSc_training/scripting/data_output/metawrap/work_files/metabat_depth.txt
-Output matrix to /mnt/data/lj752/data/MSc_training/scripting/data_output/metawrap/work_files/metabat_depth.txt
-Opening 5 bams
-Consolidating headers
-Processing bam files
-Thread 0 finished: fastq_0.bam with 9565 reads and 241 readsWellMapped
-Thread 4 finished: fastq_4.bam with 9571 reads and 201 readsWellMapped
-Thread 3 finished: fastq_3.bam with 9632 reads and 241 readsWellMapped
-Thread 2 finished: fastq_2.bam with 9646 reads and 217 readsWellMapped
-Thread 1 finished: fastq_1.bam with 9654 reads and 240 readsWellMapped
-Creating depth matrix file: /mnt/data/lj752/data/MSc_training/scripting/data_output/metawrap/work_files/metabat_depth.txt
-Closing most bam files
-Closing last bam file
-Finished
-
-------------------------------------------------------------------------------------------------------------------------
------                                       Starting binning with metaBAT2...                                      -----
-------------------------------------------------------------------------------------------------------------------------
-
-MetaBAT 2 (v2.12.1) using minContig 1500, minCV 1.0, minCVSum 1.0, maxP 95%, minS 60, and maxEdges 200. 
-0 bins (0 bases in total) formed.
-
-------------------------------------------------------------------------------------------------------------------------
------                               metaBAT2 finished successfully, and found 0 bins!                              -----
-------------------------------------------------------------------------------------------------------------------------
-
+#it found 2 bins, but i still think theres an error here:
 
 ########################################################################################################################
 #####                                                RUNNING MAXBIN2                                               #####
@@ -152,10 +17,10 @@ Output matrix to /mnt/data/lj752/data/MSc_training/scripting/data_output/metawra
 Opening 5 bams
 Consolidating headers
 Processing bam files
+Thread 0 finished: fastq_0.bam with 9565 reads and 241 readsWellMapped
 Thread 1 finished: fastq_1.bam with 9654 reads and 240 readsWellMapped
 Thread 2 finished: fastq_2.bam with 9646 reads and 217 readsWellMapped
 Thread 4 finished: fastq_4.bam with 9571 reads and 201 readsWellMapped
-Thread 0 finished: fastq_0.bam with 9565 reads and 241 readsWellMapped
 Thread 3 finished: fastq_3.bam with 9632 reads and 241 readsWellMapped
 Creating depth matrix file: /mnt/data/lj752/data/MSc_training/scripting/data_output/metawrap/work_files/mb2_master_depth.txt
 Closing most bam files
@@ -171,21 +36,166 @@ processing fastq_1.bam depth file...
 processing fastq_2.bam depth file...
 processing fastq_3.bam depth file...
 processing fastq_4.bam depth file...
-/mnt/data/lj752/tools/metaWRAP/bin/metawrap-modules/binning.sh: line 350: run_MaxBin.pl: command not found
+MaxBin 2.2.6
+No Contig file. Please specify contig file by -contig
+MaxBin - a metagenomics binning software.
+Usage:
+  run_MaxBin.pl
+    -contig (contig file)
+    -out (output file)
+
+   (Input reads and abundance information)
+    [-reads (reads file) -reads2 (readsfile) -reads3 (readsfile) -reads4 ... ]
+    [-abund (abundance file) -abund2 (abundfile) -abund3 (abundfile) -abund4 ... ]
+
+   (You can also input lists consisting of reads and abundance files)
+    [-reads_list (list of reads files)]
+    [-abund_list (list of abundance files)]
+
+   (Other parameters)
+    [-min_contig_length (minimum contig length. Default 1000)]
+    [-max_iteration (maximum Expectation-Maximization algorithm iteration number. Default 50)]
+    [-thread (thread num; default 1)]
+    [-prob_threshold (probability threshold for EM final classification. Default 0.9)]
+    [-plotmarker]
+    [-markerset (marker gene sets, 107 (default) or 40.  See README for more information.)]
+
+  (for debug purpose)
+    [-version] [-v] (print version number)
+    [-verbose]
+    [-preserve_intermediate]
+
+  Please specify either -reads or -abund information.
+  You can input multiple reads and/or abundance files at the same time.
+  Please read README file for more details.
+
+
+
+
+
+#metabat
+
+
+
+
+
+
+#concoct
+
+
+
+########################################################################################################################
+#####                                                RUNNING CONCOCT                                               #####
+########################################################################################################################
+
 
 ------------------------------------------------------------------------------------------------------------------------
------             looks like our default perl libraries are not the conda ones. Manually setting perl5             -----
------                                              library directory                                               -----
+-----                                       indexing .bam alignment files...                                       -----
 ------------------------------------------------------------------------------------------------------------------------
 
-metawrap path: /mnt/data/lj752/tools/metaWRAP/bin/metawrap
+/mnt/data/lj752/data/MSc_training/scripting/data_output/metawrap/work_files/fastq_0.bam
+/mnt/data/lj752/data/MSc_training/scripting/data_output/metawrap/work_files/fastq_1.bam
+/mnt/data/lj752/data/MSc_training/scripting/data_output/metawrap/work_files/fastq_2.bam
+/mnt/data/lj752/data/MSc_training/scripting/data_output/metawrap/work_files/fastq_3.bam
+/mnt/data/lj752/data/MSc_training/scripting/data_output/metawrap/work_files/fastq_4.bam
 
-************************************************************************************************************************
-*****             /mnt/data/lj752/tools/metaWRAP/lib/perl5/site_perl/5.22.0 does not exixt. Cannot set             *****
-*****                                  manual path to perl5 libraries. Exiting...                                  *****
-************************************************************************************************************************
+------------------------------------------------------------------------------------------------------------------------
+-----                             cutting up contigs into 10kb fragments for CONCOCT...                            -----
+------------------------------------------------------------------------------------------------------------------------
 
 
-real	0m2.029s
-user	0m7.271s
-sys	0m0.422s
+------------------------------------------------------------------------------------------------------------------------
+-----                                    estimating contig fragment coverage...                                    -----
+------------------------------------------------------------------------------------------------------------------------
+
+/mnt/data/lj752/tools/miniforge/envs/metawrap_env/bin/concoct_coverage_table.py:61: FutureWarning: read_table is deprecated, use read_csv instead, passing sep='\t'.
+  df = pd.read_table(fh, header=None)
+usage: concoct [-h] [--coverage_file COVERAGE_FILE]
+               [--composition_file COMPOSITION_FILE] [-c CLUSTERS]
+               [-k KMER_LENGTH] [-t THREADS] [-l LENGTH_THRESHOLD]
+               [-r READ_LENGTH] [--total_percentage_pca TOTAL_PERCENTAGE_PCA]
+               [-b BASENAME] [-s SEED] [-i ITERATIONS]
+               [--no_cov_normalization] [--no_total_coverage]
+               [--no_original_data] [-o] [-d] [-v]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --coverage_file COVERAGE_FILE
+                        specify the coverage file, containing a table where
+                        each row correspond to a contig, and each column
+                        correspond to a sample. The values are the average
+                        coverage for this contig in that sample. All values
+                        are separated with tabs.
+  --composition_file COMPOSITION_FILE
+                        specify the composition file, containing sequences in
+                        fasta format. It is named the composition file since
+                        it is used to calculate the kmer composition (the
+                        genomic signature) of each contig.
+  -c CLUSTERS, --clusters CLUSTERS
+                        specify maximal number of clusters for VGMM, default
+                        400.
+  -k KMER_LENGTH, --kmer_length KMER_LENGTH
+                        specify kmer length, default 4.
+  -t THREADS, --threads THREADS
+                        Number of threads to use
+  -l LENGTH_THRESHOLD, --length_threshold LENGTH_THRESHOLD
+                        specify the sequence length threshold, contigs shorter
+                        than this value will not be included. Defaults to
+                        1000.
+  -r READ_LENGTH, --read_length READ_LENGTH
+                        specify read length for coverage, default 100
+  --total_percentage_pca TOTAL_PERCENTAGE_PCA
+                        The percentage of variance explained by the principal
+                        components for the combined data.
+  -b BASENAME, --basename BASENAME
+                        Specify the basename for files or directory where
+                        outputwill be placed. Path to existing directory or
+                        basenamewith a trailing '/' will be interpreted as a
+                        directory.If not provided, current directory will be
+                        used.
+  -s SEED, --seed SEED  Specify an integer to use as seed for clustering. 0
+                        gives a random seed, 1 is the default seed and any
+                        other positive integer can be used. Other values give
+                        ArgumentTypeError.
+  -i ITERATIONS, --iterations ITERATIONS
+                        Specify maximum number of iterations for the VBGMM.
+                        Default value is 500
+  --no_cov_normalization
+                        By default the coverage is normalized with regards to
+                        samples, then normalized with regards of contigs and
+                        finally log transformed. By setting this flag you skip
+                        the normalization and only do log transorm of the
+                        coverage.
+  --no_total_coverage   By default, the total coverage is added as a new
+                        column in the coverage data matrix, independently of
+                        coverage normalization but previous to log
+                        transformation. Use this tag to escape this behaviour.
+  --no_original_data    By default the original data is saved to disk. For big
+                        datasets, especially when a large k is used for
+                        compositional data, this file can become very large.
+                        Use this tag if you don't want to save the original
+                        data.
+  -o, --converge_out    Write convergence info to files.
+  -d, --debug           Debug parameters.
+  -v, --version         show program's version number and exit
+
+------------------------------------------------------------------------------------------------------------------------
+-----                                       Starting binning with CONCOCT...                                       -----
+------------------------------------------------------------------------------------------------------------------------
+
+WARNING:root:CONCOCT is running in single threaded mode. Please, consider adjusting the --threads parameter.
+Up and running. Check /mnt/data/lj752/data/MSc_training/scripting/data_output/metawrap/work_files/concoct_out/log.txt for progress
+/mnt/data/lj752/tools/miniforge/envs/metawrap_env/lib/python2.7/site-packages/concoct/input.py:82: FutureWarning: read_table is deprecated, use read_csv instead, passing sep='\t'.
+  cov = p.read_table(cov_file, header=0, index_col=0)
+1063 34 1
+Setting 1 OMP threads
+Generate input data
+
+#it does this then
+
+
+------------------------------------------------------------------------------------------------------------------------
+-----                               CONCOCT finished successfully, and found 29 bins!                              -----
+------------------------------------------------------------------------------------------------------------------------
+
+
