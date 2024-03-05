@@ -1,0 +1,24 @@
+Running VALET for misassembly detection...
+find: ‘’: No such file or directory
+###########################################################################
+PROCESSING ASSEMBLY: asm_0 (/mnt/data/lj752/data/MSc_training/scripting/data_output/medaka/consensus.fasta)
+###########################################################################
+---------------------------------------------------------------------------
+STEP:	 FILTERING ASSEMBLY CONTIGS LESS THAN 1000 BPs
+RESULTS:	 /mnt/data/lj752/data/MSc_training/scripting/data_output/valet/asm_0/filtered_assembly.fasta
+---------------------------------------------------------------------------
+STEP:	 ALIGNING READS
+COMMAND:	 bowtie2-build /mnt/data/lj752/data/MSc_training/scripting/data_output/valet/asm_0/filtered_assembly.fasta /mnt/data/lj752/data/MSc_training/scripting/data_output/valet/asm_0/indexes/temp_lhn_wvrj
+COMMAND:	 bowtie2 -a -x /mnt/data/lj752/data/MSc_training/scripting/data_output/valet/asm_0/indexes/temp_lhn_wvrj -q -U /mnt/data/lj752/data/MSc_training/scripting/fastq_1.fastq,/mnt/data/lj752/data/MSc_training/scripting/fastq_2.fastq,/mnt/data/lj752/data/MSc_training/scripting/fastq_4.fastq,/mnt/data/lj752/data/MSc_training/scripting/fastq_3.fastq,/mnt/data/lj752/data/MSc_training/scripting/fastq_0.fastq --very-sensitive -a --reorder -p 8 --un /mnt/data/lj752/data/MSc_training/scripting/data_output/valet/asm_0/unaligned_reads/unaligned.reads -S /mnt/data/lj752/data/MSc_training/scripting/data_output/valet/asm_0/sam/library.sam
+---------------------------------------------------------------------------
+STEP:	 RUNNING SAMTOOLS
+COMMAND:	 samtools view -F 0x100 -bS /mnt/data/lj752/data/MSc_training/scripting/data_output/valet/asm_0/sam/library.sam
+COMMAND:	 samtools sort -@ 16 -o /mnt/data/lj752/data/MSc_training/scripting/data_output/valet/asm_0/bam/sorted_library.bam /mnt/data/lj752/data/MSc_training/scripting/data_output/valet/asm_0/bam/library.bam
+COMMAND:	 samtools mpileup -C50 -A -f /mnt/data/lj752/data/MSc_training/scripting/data_output/valet/asm_0/filtered_assembly.fasta /mnt/data/lj752/data/MSc_training/scripting/data_output/valet/asm_0/bam/sorted_library.bam
+RESULTS:	 /mnt/data/lj752/data/MSc_training/scripting/data_output/valet/asm_0/coverage/mpileup_output.out
+COMMAND:	 samtools index /mnt/data/lj752/data/MSc_training/scripting/data_output/valet/asm_0/bam/sorted_library.bam
+---------------------------------------------------------------------------
+STEP:	 CALCULATING CONTIG COVERAGE
+RESULTS:	 /mnt/data/lj752/data/MSc_training/scripting/data_output/valet/asm_0/coverage/temp.cvg
+TypeError: '>' not supported between instances of 'str' and 'int'
+VALET analysis completed. Results are stored in /mnt/data/lj752/data/MSc_training/scripting/data_output/valet
