@@ -246,6 +246,7 @@ if ! check_for_checkpoint "metawrap"; then
     else
         $META_FASTQ_CMD $META_FASTQ_FILES
     fi
+    metawrap bin_refinement -o $DATA_OUTPUT_PATH/metawrap/final_bins -A $DATA_OUTPUT_PATH/metawrap/concoct_bins -B $DATA_OUTPUT_PATH/metawrap/maxbin2_bins -C $DATA_OUTPUT_PATH/metabat2_bins
     conda deactivate
     create_checkpoint "metawrap"
     echo "Metawrap analysis completed. Results are stored in $DATA_OUTPUT_PATH/metawrap"
@@ -259,10 +260,8 @@ if ! check_for_checkpoint "kraken2"; then
     if [[ -z "$DBNAME" ]]; then
         read -p "No Kraken2 database location found in the config. Do you have an existing Kraken2 database? (yes/no): " has_kraken_db
         if [[ "$has_kraken_db" == "yes" ]]; then
-            # Prompt for the database name
             read -p "Enter the location of your existing Kraken2 database: " DBNAME
         else
-            # Prompt for new database name and create it
             read -p "Enter a location for your new Kraken2 database: " DBNAME
             echo "Creating and building new Kraken2 database at $DBNAME..."
 	    mkdir -p "$DBNAME"
@@ -278,10 +277,10 @@ if ! check_for_checkpoint "kraken2"; then
                     echo "Failed to download the prebuilt database. Please check your internet connection or the URL and try again."
                     exit 1
                 fi
+		echo "Database $DBNAME setup complete."
+            	sed -i "/^\[Kraken2\]/,/^\[/ {/^dbname=/ s|=.*|=$DBNAME|}" "$config_file"
+            	echo "Kraken2 database location updated in config: $DBNAME"
             fi
-            echo "Database $DBNAME setup complete."
-            sed -i "/^\[Kraken2\]/,/^\[/ {/^dbname=/ s|=.*|=$DBNAME|}" "$config_file"
-            echo "Kraken2 database location updated in config: $DBNAME"
         fi
     else
         echo "Found Kraken2 database location in config: $DBNAME"
