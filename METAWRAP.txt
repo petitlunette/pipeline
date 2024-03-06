@@ -70,12 +70,69 @@ Usage:
   Please read README file for more details.
 
 
+#this is the output with ~100 files, if the error persisted (likely) I cannot scroll back up to see it :(
+========== Job finished ==========
+Yielded 6 bins for contig (scaffold) file /mnt/data/lj752/data/MSc_training/scripting/testing//work_files/assembly.fa
+
+Here are the output files for this run.
+Please refer to the README file for further details.
+
+Summary file: /mnt/data/lj752/data/MSc_training/scripting/testing//work_files/maxbin2_out/bin.summary
+Genome abundance info file: /mnt/data/lj752/data/MSc_training/scripting/testing//work_files/maxbin2_out/bin.abundance
+Marker counts: /mnt/data/lj752/data/MSc_training/scripting/testing//work_files/maxbin2_out/bin.marker
+Marker genes for each bin: /mnt/data/lj752/data/MSc_training/scripting/testing//work_files/maxbin2_out/bin.marker_of_each_gene.tar.gz
+Bin files: /mnt/data/lj752/data/MSc_training/scripting/testing//work_files/maxbin2_out/bin.001.fasta - /mnt/data/lj752/data/MSc_training/scripting/testing//work_files/maxbin2_out/bin.006.fasta
+Unbinned sequences: /mnt/data/lj752/data/MSc_training/scripting/testing//work_files/maxbin2_out/bin.noclass
+
+
+========== Elapsed Time ==========
+0 hours 1 minutes and 16 seconds.
 
 
 
 #metabat
 
+#does not produce anything, again i can't find the error message
+#rn it with a small set to find the error, it doesn't say anything?? just doesn't run properly
+########################################################################################################################
+#####                                               RUNNING METABAT2                                               #####
+########################################################################################################################
 
+
+------------------------------------------------------------------------------------------------------------------------
+-----                                          making contig depth file...                                         -----
+------------------------------------------------------------------------------------------------------------------------
+
+Output depth matrix to /mnt/data/lj752/data/MSc_training/scripting/testing/small/work_files/metabat_depth.txt
+Output matrix to /mnt/data/lj752/data/MSc_training/scripting/testing/small/work_files/metabat_depth.txt
+Opening 10 bams
+Consolidating headers
+Processing bam files
+Thread 5 finished: fastq_61.bam with 10695 reads and 263 readsWellMapped
+Thread 1 finished: fastq_12.bam with 10676 reads and 292 readsWellMapped
+Thread 9 finished: fastq_79.bam with 10674 reads and 284 readsWellMapped
+Thread 8 finished: fastq_78.bam with 10601 reads and 259 readsWellMapped
+Thread 3 finished: fastq_34.bam with 10321 reads and 253 readsWellMapped
+Thread 4 finished: fastq_50.bam with 10409 reads and 252 readsWellMapped
+Thread 2 finished: fastq_2.bam with 10803 reads and 313 readsWellMapped
+Thread 6 finished: fastq_72.bam with 10578 reads and 292 readsWellMapped
+Thread 0 finished: fastq_1.bam with 10691 reads and 331 readsWellMapped
+Thread 7 finished: fastq_73.bam with 10650 reads and 308 readsWellMapped
+Creating depth matrix file: /mnt/data/lj752/data/MSc_training/scripting/testing/small/work_files/metabat_depth.txt
+Closing most bam files
+Closing last bam file
+Finished
+
+------------------------------------------------------------------------------------------------------------------------
+-----                                       Starting binning with metaBAT2...                                      -----
+------------------------------------------------------------------------------------------------------------------------
+
+MetaBAT 2 (v2.12.1) using minContig 1500, minCV 1.0, minCVSum 1.0, maxP 95%, minS 60, and maxEdges 200. 
+0 bins (0 bases in total) formed.
+
+------------------------------------------------------------------------------------------------------------------------
+-----                               metaBAT2 finished successfully, and found 0 bins!                              -----
+------------------------------------------------------------------------------------------------------------------------
 
 
 
@@ -167,5 +224,12 @@ Up and running. Check /mnt/data/lj752/data/MSc_training/scripting/testing/work_f
   cov = p.read_table(cov_file, header=0, index_col=0)
 
 
+#concoct found 7 bins, similar to maxbin2 so im happy its working but why is this error persisting?
+
+
+#total time for ~100 samples
+real	186m25.462s
+user	195m54.340s
+sys	1m32.075s
 
 
