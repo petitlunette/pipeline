@@ -1,4 +1,4 @@
-metawrap bin_refinement -o /mnt/data/lj752/data/MSc_training/scripting/data_output/metawrap/final_bins -A /mnt/data/lj752/data/MSc_training/scripting/data_output/metawrap/concoct_bins -B /mnt/data/lj752/data/MSc_training/scripting/data_output/metawrap/maxbin2_bins -C /mnt/data/lj752/data/MSc_training/scripting/data_output/metabat2_bins
+metawrap bin_refinement -o /mnt/data/lj752/data/MSc_training/scripting/testing/final_bins -A /mnt/data/lj752/data/MSc_training/scripting/testing/concoct_bins -B /mnt/data/lj752/data/MSc_training/scripting/testing/maxbin2_bins -C /mnt/data/lj752/data/MSc_training/scripting/testing/metabat2_bins
 
 ------------------------------------------------------------------------------------------------------------------------
 -----            There is 40 RAM and 1 threads available, and each pplacer thread uses >40GB, so I will            -----
@@ -15,113 +15,27 @@ metawrap bin_refinement -o /mnt/data/lj752/data/MSc_training/scripting/data_outp
 -----                               setting up output folder and copying over bins...                              -----
 ------------------------------------------------------------------------------------------------------------------------
 
+Skipping /mnt/data/lj752/data/MSc_training/scripting/testing/concoct_bins/unbinned.fa because the bin size is not between 50kb and 20Mb
+
+------------------------------------------------------------------------------------------------------------------------
+-----                                           there are 6 bins in binsA                                          -----
+------------------------------------------------------------------------------------------------------------------------
+
+
+------------------------------------------------------------------------------------------------------------------------
+-----                                           there are 6 bins in binsB                                          -----
+------------------------------------------------------------------------------------------------------------------------
+
+stat: cannot stat '/mnt/data/lj752/data/MSc_training/scripting/testing/metabat2_bins/*': No such file or directory
+/mnt/data/lj752/tools/metaWRAP/bin/metawrap-modules/bin_refinement.sh: line 193: ((: > 50000: syntax error: operand expected (error token is "> 50000")
+Skipping /mnt/data/lj752/data/MSc_training/scripting/testing/metabat2_bins/* because the bin size is not between 50kb and 20Mb
+
+------------------------------------------------------------------------------------------------------------------------
+-----                                           there are 0 bins in binsC                                          -----
+------------------------------------------------------------------------------------------------------------------------
+
 
 ************************************************************************************************************************
-*****             Warning: /mnt/data/lj752/data/MSc_training/scripting/data_output/metawrap/final_bins             *****
-*****                                     already exists. Attempting to clean.                                     *****
-************************************************************************************************************************
-
-rm: cannot remove '/mnt/data/lj752/data/MSc_training/scripting/data_output/metawrap/final_bins/binsAB': No such file or directory
-rm: cannot remove '/mnt/data/lj752/data/MSc_training/scripting/data_output/metawrap/final_bins/binsBC': No such file or directory
-rm: cannot remove '/mnt/data/lj752/data/MSc_training/scripting/data_output/metawrap/final_bins/binsAC': No such file or directory
-rm: cannot remove '/mnt/data/lj752/data/MSc_training/scripting/data_output/metawrap/final_bins/binsABC': No such file or directory
-rm: cannot remove '/mnt/data/lj752/data/MSc_training/scripting/data_output/metawrap/final_bins/bin.*': No such file or directory
-Skipping /mnt/data/lj752/data/MSc_training/scripting/data_output/metawrap/concoct_bins/bin.0.fa because the bin size is not between 50kb and 20Mb
-Skipping /mnt/data/lj752/data/MSc_training/scripting/data_output/metawrap/concoct_bins/bin.1.fa because the bin size is not between 50kb and 20Mb
-Skipping /mnt/data/lj752/data/MSc_training/scripting/data_output/metawrap/concoct_bins/bin.12.fa because the bin size is not between 50kb and 20Mb
-Skipping /mnt/data/lj752/data/MSc_training/scripting/data_output/metawrap/concoct_bins/bin.15.fa because the bin size is not between 50kb and 20Mb
-Skipping /mnt/data/lj752/data/MSc_training/scripting/data_output/metawrap/concoct_bins/bin.18.fa because the bin size is not between 50kb and 20Mb
-Skipping /mnt/data/lj752/data/MSc_training/scripting/data_output/metawrap/concoct_bins/bin.23.fa because the bin size is not between 50kb and 20Mb
-Skipping /mnt/data/lj752/data/MSc_training/scripting/data_output/metawrap/concoct_bins/bin.25.fa because the bin size is not between 50kb and 20Mb
-Skipping /mnt/data/lj752/data/MSc_training/scripting/data_output/metawrap/concoct_bins/bin.27.fa because the bin size is not between 50kb and 20Mb
-Skipping /mnt/data/lj752/data/MSc_training/scripting/data_output/metawrap/concoct_bins/bin.3.fa because the bin size is not between 50kb and 20Mb
-Skipping /mnt/data/lj752/data/MSc_training/scripting/data_output/metawrap/concoct_bins/bin.4.fa because the bin size is not between 50kb and 20Mb
-Skipping /mnt/data/lj752/data/MSc_training/scripting/data_output/metawrap/concoct_bins/bin.5.fa because the bin size is not between 50kb and 20Mb
-Skipping /mnt/data/lj752/data/MSc_training/scripting/data_output/metawrap/concoct_bins/bin.9.fa because the bin size is not between 50kb and 20Mb
-Skipping /mnt/data/lj752/data/MSc_training/scripting/data_output/metawrap/concoct_bins/unbinned.fa because the bin size is not between 50kb and 20Mb
-
-------------------------------------------------------------------------------------------------------------------------
------                                          there are 16 bins in binsA                                          -----
-------------------------------------------------------------------------------------------------------------------------
-
-
-------------------------------------------------------------------------------------------------------------------------
------                                           there are 2 bins in binsB                                          -----
-------------------------------------------------------------------------------------------------------------------------
-
-
-------------------------------------------------------------------------------------------------------------------------
------                                             There are 2 bin sets!                                            -----
-------------------------------------------------------------------------------------------------------------------------
-
-
-------------------------------------------------------------------------------------------------------------------------
------                              Fix contig naming by removing special characters...                             -----
-------------------------------------------------------------------------------------------------------------------------
-
-
-########################################################################################################################
-#####                                             BEGIN BIN REFINEMENT                                             #####
-########################################################################################################################
-
-
-------------------------------------------------------------------------------------------------------------------------
------           There are two bin folders, so we can consolidate them into a third, more refined bin set.          -----
-------------------------------------------------------------------------------------------------------------------------
-
-Specified 2 input bin sets: -1 binsA -2 binsB
-Add folder/bin name to contig name for binsA bins
-Add folder/bin name to contig name for binsB bins
-Combine all bins together
-The number of refined bins: 0
-Exporting refined bins...
-
-Deleting temporary files
-
-All done!
-
-------------------------------------------------------------------------------------------------------------------------
------                                      there are 0 refined bins in binsAB                                      -----
-------------------------------------------------------------------------------------------------------------------------
-
-
-------------------------------------------------------------------------------------------------------------------------
------                                     Bin refinement finished successfully!                                    -----
-------------------------------------------------------------------------------------------------------------------------
-
-
-------------------------------------------------------------------------------------------------------------------------
------                            fixing bin naming to .fa convention for consistancy...                            -----
-------------------------------------------------------------------------------------------------------------------------
-
-
-------------------------------------------------------------------------------------------------------------------------
------                              making sure every refined bin set contains bins...                              -----
-------------------------------------------------------------------------------------------------------------------------
-
-
-------------------------------------------------------------------------------------------------------------------------
------                        Removing bin set binsAB because it yielded 0 refined bins ...                         -----
-------------------------------------------------------------------------------------------------------------------------
-
-
-########################################################################################################################
-#####                                      RUNNING CHECKM ON ALL SETS OF BINS                                      #####
-########################################################################################################################
-
-
-------------------------------------------------------------------------------------------------------------------------
------                                         Running CheckM on binsA bins                                         -----
-------------------------------------------------------------------------------------------------------------------------
-
-Traceback (most recent call last):
-  File "/mnt/data/lj752/tools/miniforge/envs/metawrap_env/bin/checkm", line 36, in <module>
-    from checkm import main
-  File "/mnt/data/lj752/tools/miniforge/envs/metawrap_env/lib/python2.7/site-packages/checkm/main.py", line 25, in <module>
-    from checkm.defaultValues import DefaultValues
-ImportError: No module named defaultValues
-
-************************************************************************************************************************
-*****                             Something went wrong with running CheckM. Exiting...                             *****
+*****                                    Please provide valid input. Exiting...                                    *****
 ************************************************************************************************************************
 
