@@ -285,9 +285,10 @@ if ! check_for_checkpoint "kraken2"; then
     else
         echo "Found Kraken2 database location in config: $DBNAME"
     fi
-    
     echo "Running Kraken2 analysis using the database $DBNAME..."
-    kraken2 --db "$DBNAME" $DATA_OUTPUT_PATH/medaka/consensus.fasta --output $DATA_OUTPUT_PATH/kraken2/kraken2_output.txt --report $DATA_OUTPUT_PATH/kraken2/kraken2_report.txt 
+    kraken2 --db "$DBNAME" $DATA_OUTPUT_PATH/metawrap/concoct_bins --output $DATA_OUTPUT_PATH/kraken2/concoct_kraken2_output.txt --report $DATA_OUTPUT_PATH/kraken2/concoct_kraken2_report.txt 
+    kraken2 --db "$DBNAME" $DATA_OUTPUT_PATH/metawrap/maxbin2_bins --output $DATA_OUTPUT_PATH/kraken2/maxbin2_kraken2_output.txt --report $DATA_OUTPUT_PATH/kraken2/maxbin2_kraken2_report.txt
+    kraken2 --db "$DBNAME" $DATA_OUTPUT_PATH/metawrap/concoct_bins --output $DATA_OUTPUT_PATH/kraken2/metabat2_kraken2_output.txt --report $DATA_OUTPUT_PATH/kraken2/metabat2_kraken2_report.txt  
     create_checkpoint "kraken2"
 fi
 
