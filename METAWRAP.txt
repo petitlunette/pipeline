@@ -82,28 +82,6 @@ Usage:
 
 #concoct
 
-
-
-########################################################################################################################
-#####                                                RUNNING CONCOCT                                               #####
-########################################################################################################################
-
-
-------------------------------------------------------------------------------------------------------------------------
------                                       indexing .bam alignment files...                                       -----
-------------------------------------------------------------------------------------------------------------------------
-
-/mnt/data/lj752/data/MSc_training/scripting/data_output/metawrap/work_files/fastq_0.bam
-/mnt/data/lj752/data/MSc_training/scripting/data_output/metawrap/work_files/fastq_1.bam
-/mnt/data/lj752/data/MSc_training/scripting/data_output/metawrap/work_files/fastq_2.bam
-/mnt/data/lj752/data/MSc_training/scripting/data_output/metawrap/work_files/fastq_3.bam
-/mnt/data/lj752/data/MSc_training/scripting/data_output/metawrap/work_files/fastq_4.bam
-
-------------------------------------------------------------------------------------------------------------------------
------                             cutting up contigs into 10kb fragments for CONCOCT...                            -----
-------------------------------------------------------------------------------------------------------------------------
-
-
 ------------------------------------------------------------------------------------------------------------------------
 -----                                    estimating contig fragment coverage...                                    -----
 ------------------------------------------------------------------------------------------------------------------------
@@ -184,19 +162,10 @@ optional arguments:
 ------------------------------------------------------------------------------------------------------------------------
 
 WARNING:root:CONCOCT is running in single threaded mode. Please, consider adjusting the --threads parameter.
-Up and running. Check /mnt/data/lj752/data/MSc_training/scripting/data_output/metawrap/work_files/concoct_out/log.txt for progress
+Up and running. Check /mnt/data/lj752/data/MSc_training/scripting/testing/work_files/concoct_out/log.txt for progress
 /mnt/data/lj752/tools/miniforge/envs/metawrap_env/lib/python2.7/site-packages/concoct/input.py:82: FutureWarning: read_table is deprecated, use read_csv instead, passing sep='\t'.
   cov = p.read_table(cov_file, header=0, index_col=0)
-1063 34 1
-Setting 1 OMP threads
-Generate input data
 
-#it does this then
-
-
-------------------------------------------------------------------------------------------------------------------------
------                               CONCOCT finished successfully, and found 29 bins!                              -----
-------------------------------------------------------------------------------------------------------------------------
 
 
 
