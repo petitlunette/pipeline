@@ -236,7 +236,7 @@ if ! check_for_checkpoint "metawrap"; then
     TEMP_FASTQ_PATH="$INPUT_PATH/temp"
     META_FASTQ_FILES=$(find "$INPUT_PATH" -type f -name "*.fastq" | paste -sd " " -)
     META_TEMP_FASTQ_FILES=$(find "$TEMP_FASTQ_PATH" -type f -name "*.fastq" | paste -sd " " -)
-    META_BASE_CMD="metawrap binning -o $DATA_OUTPUT_PATH/metawrap -a $DATA_OUTPUT_PATH/medaka/consensus.fasta --metabat2 --maxbin2 --concoct --single-end"
+    META_BASE_CMD="metawrap binning -o $DATA_OUTPUT_PATH/metawrap -a $DATA_OUTPUT_PATH/medaka/consensus.fasta --maxbin2 --concoct --single-end"
     META_FASTQ_CMD="$META_BASE_CMD $META_FASTQ_FILES"
     META_TEMP_FASTQ_CMD="$META_BASE_CMD $META_TEMP_FASTQ_FILES"
     if [[ "$run_dorado" == "yes" ]]; then
@@ -246,7 +246,7 @@ if ! check_for_checkpoint "metawrap"; then
     else
         $META_FASTQ_CMD $META_FASTQ_FILES
     fi
-    metawrap bin_refinement -o $DATA_OUTPUT_PATH/metawrap/final_bins -A $DATA_OUTPUT_PATH/metawrap/concoct_bins -B $DATA_OUTPUT_PATH/metawrap/maxbin2_bins -C $DATA_OUTPUT_PATH/metabat2_bins
+    metawrap bin_refinement -o $DATA_OUTPUT_PATH/metawrap/final_bins -A $DATA_OUTPUT_PATH/metawrap/concoct_bins -B $DATA_OUTPUT_PATH/metawrap/maxbin2_bins
     conda deactivate
     create_checkpoint "metawrap"
     echo "Metawrap analysis completed. Results are stored in $DATA_OUTPUT_PATH/metawrap"
@@ -286,9 +286,7 @@ if ! check_for_checkpoint "kraken2"; then
         echo "Found Kraken2 database location in config: $DBNAME"
     fi
     echo "Running Kraken2 analysis using the database $DBNAME..."
-    kraken2 --db "$DBNAME" $DATA_OUTPUT_PATH/metawrap/concoct_bins --output $DATA_OUTPUT_PATH/kraken2/concoct_kraken2_output.txt --report $DATA_OUTPUT_PATH/kraken2/concoct_kraken2_report.txt 
-    kraken2 --db "$DBNAME" $DATA_OUTPUT_PATH/metawrap/maxbin2_bins --output $DATA_OUTPUT_PATH/kraken2/maxbin2_kraken2_output.txt --report $DATA_OUTPUT_PATH/kraken2/maxbin2_kraken2_report.txt
-    kraken2 --db "$DBNAME" $DATA_OUTPUT_PATH/metawrap/concoct_bins --output $DATA_OUTPUT_PATH/kraken2/metabat2_kraken2_output.txt --report $DATA_OUTPUT_PATH/kraken2/metabat2_kraken2_report.txt  
+    kraken2 --db "$DBNAME" $DATA_OUTPUT_PATH/metawrap/final_bins/binsAB --output $DATA_OUTPUT_PATH/kraken2/concoct_kraken2_output.txt --report $DATA_OUTPUT_PATH/kraken2/concoct_kraken2_report.txt 
     create_checkpoint "kraken2"
 fi
 
