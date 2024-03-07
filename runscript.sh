@@ -292,42 +292,37 @@ if ! check_for_checkpoint "kraken2"; then
    	    echo "Found Kraken2 database location in config: $DBNAME"
 	    database_setup_success=true
         fi
-	EXCLUDE_DIRS=("concoct_bins" "figures" "maxbin2_bins" "work_files")
- 	UNIQUE_DIRS=$(find "$DATA_OUTPUT_PATH/metawrap/final_bins" -mindepth 1 -maxdepth 1 -type d | grep -vE "$(printf "|%s" "${EXCLUDE_DIRS[@]}" | sed 's/^|//')")
-    	if [ -z "$UNIQUE_DIRS" ]; then
-           echo "No unique directories found."
-           exit 1
-   	fi
-    	echo "Unique directories found: $UNIQUE_DIRS"
-    	while read -r UNIQUE_DIR; do
-       	    if [ ! -z "$UNIQUE_DIR" ]; then
-            	echo "Processing directory: $UNIQUE_DIR"
-            	FASTA_FILES=$(find "$UNIQUE_DIR" -type f -name "*.fa")
-            	if [ -z "$FASTA_FILES" ]; then
-                    echo "No FASTA files found in $UNIQUE_DIR."
-                    continue
+	if [[ "$database_setup_success" == true ]]; then
+            echo "Proceeding with Kraken2 analysis..."
+	    EXCLUDE_DIRS=("concoct_bins" "figures" "maxbin2_bins" "work_files")
+ 	    UNIQUE_DIRS=$(find "$DATA_OUTPUT_PATH/metawrap/final_bins" -mindepth 1 -maxdepth 1 -type d | grep -vE "$(printf "|%s" "${EXCLUDE_DIRS[@]}" | sed 's/^|//')")
+    	    if [ -z "$UNIQUE_DIRS" ]; then
+           	echo "No unique directories found."
+            	exit 1
+   	    fi
+    	    echo "Unique directories found: $UNIQUE_DIRS"
+    	    while read -r UNIQUE_DIR; do
+       	    	if [ ! -z "$UNIQUE_DIR" ]; then
+            	    echo "Processing directory: $UNIQUE_DIR"
+            	    FASTA_FILES=$(find "$UNIQUE_DIR" -type f -name "*.fa")
+            	    if [ -z "$FASTA_FILES" ]; then
+                    	echo "No FASTA files found in $UNIQUE_DIR."
+                    	continue
+            	    fi
+            	    while read -r FASTA_FILE; do
+                    	echo "Running Kraken2 analysis on $FASTA_FILE..."
+                    	basename_fasta=$(basename "$FASTA_FILE" .fa)
+                    	kraken2 --db "$DBNAME" "$FASTA_FILE" --output "$DATA_OUTPUT_PATH/kraken2/${basename_fasta}_kraken2_output.txt" --report "$DATA_OUTPUT_PATH/kraken2/${basename_fasta}_kraken2_report.txt" 
+            	    done <<< "$FASTA_FILES"
             	fi
-            	while read -r FASTA_FILE; do
-                    echo "Running Kraken2 analysis on $FASTA_FILE..."
-                    basename_fasta=$(basename "$FASTA_FILE" .fa)
-                    kraken2 --db "$DBNAME" "$FASTA_FILE" --output "$DATA_OUTPUT_PATH/kraken2/${basename_fasta}_kraken2_output.txt" --report "$DATA_OUTPUT_PATH/kraken2/${basename_fasta}_kraken2_report.txt" 
-            	done <<< "$FASTA_FILES"
-            fi
-    	    done <<< "$UNIQUE_DIRS"
-            create_checkpoint "kraken2"
-	fi
- fi
+    	    	done <<< "$UNIQUE_DIRS"
+    	    else
+            	echo "Unable to proceed without a valid Kraken2 database setup."
+            exit 1
+    	fi
+    	create_checkpoint "kraken2"
+    fi
 
 echo "Pipeline execution completed. If you wish to rerun the pipeline or specific steps, remember to delete the '.<step_name>_done' checkpoint files from '$DATA_OUTPUT_PATH'."
 
-if [[ "$database_setup_success" == true ]]; then
-        # Here, you can proceed with Kraken2 analysis using the set up or found DBNAME
-        echo "Proceeding with Kraken2 analysis..."
-        # Code to perform Kraken2 analysis goes here...
-    else
-        echo "Unable to proceed without a valid Kraken2 database setup."
-        exit 1
-    fi
-    
-    create_checkpoint "kraken2"
-fi
+
