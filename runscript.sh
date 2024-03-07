@@ -285,11 +285,33 @@ if ! check_for_checkpoint "kraken2"; then
     else
         echo "Found Kraken2 database location in config: $DBNAME"
     fi
-    echo "Running Kraken2 analysis using the database $DBNAME..."
-    kraken2 --db "$DBNAME" $DATA_OUTPUT_PATH/metawrap/final_bins/binsAB --output $DATA_OUTPUT_PATH/kraken2/concoct_kraken2_output.txt --report $DATA_OUTPUT_PATH/kraken2/concoct_kraken2_report.txt 
-    create_checkpoint "kraken2"
+    exclude_dirs=("concoct_bins" "figures" "maxbin2_bins" "work_files")
+    unique_dirs=$(find "$DATA_OUTPUT_PATH/metawrap/final_bins" -mindepth 1 -maxdepth 1 -type d | grep -vE "$(printf "|%s" "${exclude_dirs[@]}" | sed 's/^|//')")
+    # Check if unique_dirs variable is not empty
+	if [ -z "$unique_dirs" ]; then
+   	echo "No unique directories found."
+   	exit 1
+    fi
 fi
 
+echo "Unique directories found: $unique_dirs"
+
+# Assuming Kraken2 is to be run for each directory
+if ! check_for_checkpoint "kraken2"; then
+    DBNAME=$(get_config_value "Kraken2" "dbname")
+    # ... Previous Kraken2 setup code ...
+
+    # Iterate over each unique directory and use it as input for Kraken2
+    while read -r unique_dir; do
+        if [ ! -z "$unique_dir" ]; then
+            echo "Running Kraken2 analysis using the database $DBNAME and input directory $unique_dir..."
+            # Replace the following line with the actual Kraken2 command, properly handling the directory as input
+            kraken2 --db "$DBNAME" "$unique_dir" --output "$DATA_OUTPUT_PATH/kraken2/kraken2_output.txt" --report "$DATA_OUTPUT_PATH/kraken2/kraken2_report.txt"
+        fi
+    done <<< "$unique_dirs"
+
+    create_checkpoint "kraken2"
+fi
 
 echo "Pipeline execution completed. If you wish to rerun the pipeline or specific steps, remember to delete the '.<step_name>_done' checkpoint files from '$DATA_OUTPUT_PATH'."
 
