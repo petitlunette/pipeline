@@ -291,10 +291,12 @@ if ! check_for_checkpoint "kraken2"; then
     	exit 1
     fi
     echo "Unique directories found: $UNIQUE_DIRS"
-    while read -r UNIQUE_DIR; do
+      while read -r UNIQUE_DIR; do
         if [ ! -z "$UNIQUE_DIR" ]; then
             echo "Running Kraken2 analysis using the database $DBNAME and input directory $UNIQUE_DIR..."
-            kraken2 --db "$DBNAME" "$UNIQUE_DIR" --output $DATA_OUTPUT_PATH/kraken2/kraken2_output.txt --report "$DATA_OUTPUT_PATH/kraken2/kraken2_report.txt"
+            # Extract the basename of the directory to use in the output and report filenames
+            basename_dir=$(basename "$UNIQUE_DIR")
+            kraken2 --db "$DBNAME" "$UNIQUE_DIR" --output "$DATA_OUTPUT_PATH/kraken2/${basename_dir}_kraken2_output.txt" --report "$DATA_OUTPUT_PATH/kraken2/${basename_dir}_kraken2_report.txt"
         fi
     done <<< "$UNIQUE_DIRS"
     create_checkpoint "kraken2"
