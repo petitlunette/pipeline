@@ -255,34 +255,39 @@ fi
 #Kraken2 
 if ! check_for_checkpoint "kraken2"; then
     DBNAME=$(get_config_value "Kraken2" "dbname")
+    database_setup_success=false
     if [[ -z "$DBNAME" ]]; then
         read -p "No Kraken2 database location found in the config. Do you have an existing Kraken2 database? (yes/no): " has_kraken_db
         if [[ "$has_kraken_db" == "yes" ]]; then
             read -p "Enter the location of your existing Kraken2 database: " DBNAME
+	    database_setup_success=true
         else
             read -p "Enter a location for your new Kraken2 database: " DBNAME
             echo "Creating and building new Kraken2 database at $DBNAME..."
 	    mkdir -p "$DBNAME"
-            if ! kraken2-build --standard --db "$DBNAME"; then
+            if kraken2-build --standard --db "$DBNAME"; then
+	    	database_setup_success=true
+      	    else
                 echo "Standard database build failed. Attempting to download prebuilt database..."
                 wget -O "$DBNAME/k2_standard_20240112.tar.gz" https://genome-idx.s3.amazonaws.com/kraken/k2_standard_20240112.tar.gz
 		if [ $? -eq 0 ]; then
                     echo "Extracting database..."
 		    tar -xzf "$DBNAME/k2_standard_20240112.tar.gz" -C "$DBNAME" --strip-components=1 
 		    rm "$DBNAME/k2_standard_20240112.tar.gz"
-		    echo "Prebuilt database downloaded and extracted."
+      		    database_setup_success=true
                 else
                     echo "Failed to download the prebuilt database. Please check your internet connection or the URL and try again."
-                    exit 1
+                    fi
                 fi
-		echo "Database $DBNAME setup complete."
-            	sed -i "/^\[Kraken2\]/,/^\[/ {/^dbname=/ s|=.*|=$DBNAME|}" "$config_file"
-            	echo "Kraken2 database location updated in config: $DBNAME"
-            fi
-        fi
-    else
-        echo "Found Kraken2 database location in config: $DBNAME"
-    fi
+	    fi 
+	    if [[ "$database_setup_success" == true ]]; then
+                echo "Database $DBNAME setup complete."
+                sed -i "/^\[Kraken2\]/,/^\[/ {/^dbname=/ s|=.*|=$DBNAME|}" "$config_file"
+                echo "Kraken2 database location updated in config: $DBNAME"
+            else
+	    	echo "Found Kraken2 database location in config: $DBNAME"
+    	    fi
+	 
     EXCLUDE_DIRS=("concoct_bins" "figures" "maxbin2_bins" "work_files")
     UNIQUE_DIRS=$(find "$DATA_OUTPUT_PATH/metawrap/final_bins" -mindepth 1 -maxdepth 1 -type d | grep -vE "$(printf "|%s" "${EXCLUDE_DIRS[@]}" | sed 's/^|//')")
     if [ -z "$UNIQUE_DIRS" ]; then
