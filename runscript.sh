@@ -283,7 +283,6 @@ if ! check_for_checkpoint "kraken2"; then
     else
         echo "Found Kraken2 database location in config: $DBNAME"
     fi
-    
     EXCLUDE_DIRS=("concoct_bins" "figures" "maxbin2_bins" "work_files")
     UNIQUE_DIRS=$(find "$DATA_OUTPUT_PATH/metawrap/final_bins" -mindepth 1 -maxdepth 1 -type d | grep -vE "$(printf "|%s" "${EXCLUDE_DIRS[@]}" | sed 's/^|//')")
     if [ -z "$UNIQUE_DIRS" ]; then
@@ -291,29 +290,21 @@ if ! check_for_checkpoint "kraken2"; then
         exit 1
     fi
     echo "Unique directories found: $UNIQUE_DIRS"
-
     while read -r UNIQUE_DIR; do
         if [ ! -z "$UNIQUE_DIR" ]; then
             echo "Processing directory: $UNIQUE_DIR"
-
-            # Find all FASTA files in the current unique directory
-            FASTA_FILES=$(find "$UNIQUE_DIR" -type f -name "*.fasta")
-
-            # Check if FASTA files were found
+            FASTA_FILES=$(find "$UNIQUE_DIR" -type f -name "*.fa")
             if [ -z "$FASTA_FILES" ]; then
                 echo "No FASTA files found in $UNIQUE_DIR."
-                continue # Skip to the next directory
+                continue
             fi
-
-            # Run Kraken2 on each FASTA file found
             while read -r FASTA_FILE; do
                 echo "Running Kraken2 analysis on $FASTA_FILE..."
-                basename_fasta=$(basename "$FASTA_FILE" .fasta)
+                basename_fasta=$(basename "$FASTA_FILE" .fa)
                 kraken2 --db "$DBNAME" "$FASTA_FILE" --output "$DATA_OUTPUT_PATH/kraken2/${basename_fasta}_kraken2_output.txt" --report "$DATA_OUTPUT_PATH/kraken2/${basename_fasta}_kraken2_report.txt" 
             done <<< "$FASTA_FILES"
         fi
     done <<< "$UNIQUE_DIRS"
-
     create_checkpoint "kraken2"
 fi
 
