@@ -320,3 +320,14 @@ if ! check_for_checkpoint "kraken2"; then
 
 echo "Pipeline execution completed. If you wish to rerun the pipeline or specific steps, remember to delete the '.<step_name>_done' checkpoint files from '$DATA_OUTPUT_PATH'."
 
+if [[ "$database_setup_success" == true ]]; then
+        # Here, you can proceed with Kraken2 analysis using the set up or found DBNAME
+        echo "Proceeding with Kraken2 analysis..."
+        # Code to perform Kraken2 analysis goes here...
+    else
+        echo "Unable to proceed without a valid Kraken2 database setup."
+        exit 1
+    fi
+    
+    create_checkpoint "kraken2"
+fi
