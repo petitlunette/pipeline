@@ -251,8 +251,7 @@ if ! check_for_checkpoint "metawrap"; then
     create_checkpoint "metawrap"
     echo "Metawrap analysis completed. Results are stored in $DATA_OUTPUT_PATH/metawrap"
 fi
-fi
-    
+
 #Kraken2 
 if ! check_for_checkpoint "kraken2"; then
     DBNAME=$(get_config_value "Kraken2" "dbname")
@@ -284,25 +283,39 @@ if ! check_for_checkpoint "kraken2"; then
     else
         echo "Found Kraken2 database location in config: $DBNAME"
     fi
+    
     EXCLUDE_DIRS=("concoct_bins" "figures" "maxbin2_bins" "work_files")
     UNIQUE_DIRS=$(find "$DATA_OUTPUT_PATH/metawrap/final_bins" -mindepth 1 -maxdepth 1 -type d | grep -vE "$(printf "|%s" "${EXCLUDE_DIRS[@]}" | sed 's/^|//')")
     if [ -z "$UNIQUE_DIRS" ]; then
-   	echo "No unique directories found."
-    	exit 1
+        echo "No unique directories found."
+        exit 1
     fi
     echo "Unique directories found: $UNIQUE_DIRS"
-      while read -r UNIQUE_DIR; do
+
+    while read -r UNIQUE_DIR; do
         if [ ! -z "$UNIQUE_DIR" ]; then
-            echo "Running Kraken2 analysis using the database $DBNAME and input directory $UNIQUE_DIR..."
-            # Extract the basename of the directory to use in the output and report filenames
-            basename_dir=$(basename "$UNIQUE_DIR")
-            kraken2 --db "$DBNAME" "$UNIQUE_DIR" --output "$DATA_OUTPUT_PATH/kraken2/${basename_dir}_kraken2_output.txt" --report "$DATA_OUTPUT_PATH/kraken2/${basename_dir}_kraken2_report.txt"
+            echo "Processing directory: $UNIQUE_DIR"
+
+            # Find all FASTA files in the current unique directory
+            FASTA_FILES=$(find "$UNIQUE_DIR" -type f -name "*.fasta")
+
+            # Check if FASTA files were found
+            if [ -z "$FASTA_FILES" ]; then
+                echo "No FASTA files found in $UNIQUE_DIR."
+                continue # Skip to the next directory
+            fi
+
+            # Run Kraken2 on each FASTA file found
+            while read -r FASTA_FILE; do
+                echo "Running Kraken2 analysis on $FASTA_FILE..."
+                basename_fasta=$(basename "$FASTA_FILE" .fasta)
+                kraken2 --db "$DBNAME" "$FASTA_FILE" --output "$DATA_OUTPUT_PATH/kraken2/${basename_fasta}_kraken2_output.txt" --report "$DATA_OUTPUT_PATH/kraken2/${basename_fasta}_kraken2_report.txt" 
+            done <<< "$FASTA_FILES"
         fi
     done <<< "$UNIQUE_DIRS"
+
     create_checkpoint "kraken2"
 fi
-
- 
 
 echo "Pipeline execution completed. If you wish to rerun the pipeline or specific steps, remember to delete the '.<step_name>_done' checkpoint files from '$DATA_OUTPUT_PATH'."
 
