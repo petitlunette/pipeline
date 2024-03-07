@@ -285,69 +285,38 @@ if ! check_for_checkpoint "kraken2"; then
                 sed -i "/^\[Kraken2\]/,/^\[/ {/^dbname=/ s|=.*|=$DBNAME|}" "$config_file"
                 echo "Kraken2 database location updated in config: $DBNAME"
             else
-	    	echo "Found Kraken2 database location in config: $DBNAME"
+	    	echo "Kraken2 database setup failed. Exiting."
+      		exit 1
     	    fi
-	 
-    EXCLUDE_DIRS=("concoct_bins" "figures" "maxbin2_bins" "work_files")
-    UNIQUE_DIRS=$(find "$DATA_OUTPUT_PATH/metawrap/final_bins" -mindepth 1 -maxdepth 1 -type d | grep -vE "$(printf "|%s" "${EXCLUDE_DIRS[@]}" | sed 's/^|//')")
-    if [ -z "$UNIQUE_DIRS" ]; then
-        echo "No unique directories found."
-        exit 1
-    fi
-    echo "Unique directories found: $UNIQUE_DIRS"
-    while read -r UNIQUE_DIR; do
-        if [ ! -z "$UNIQUE_DIR" ]; then
-            echo "Processing directory: $UNIQUE_DIR"
-            FASTA_FILES=$(find "$UNIQUE_DIR" -type f -name "*.fa")
-            if [ -z "$FASTA_FILES" ]; then
-                echo "No FASTA files found in $UNIQUE_DIR."
-                continue
-            fi
-            while read -r FASTA_FILE; do
-                echo "Running Kraken2 analysis on $FASTA_FILE..."
-                basename_fasta=$(basename "$FASTA_FILE" .fa)
-                kraken2 --db "$DBNAME" "$FASTA_FILE" --output "$DATA_OUTPUT_PATH/kraken2/${basename_fasta}_kraken2_output.txt" --report "$DATA_OUTPUT_PATH/kraken2/${basename_fasta}_kraken2_report.txt" 
-            done <<< "$FASTA_FILES"
+        else
+   	    echo "Found Kraken2 database location in config: $DBNAME"
+	    database_setup_success=true
         fi
-    done <<< "$UNIQUE_DIRS"
-    create_checkpoint "kraken2"
-fi
+	EXCLUDE_DIRS=("concoct_bins" "figures" "maxbin2_bins" "work_files")
+ 	UNIQUE_DIRS=$(find "$DATA_OUTPUT_PATH/metawrap/final_bins" -mindepth 1 -maxdepth 1 -type d | grep -vE "$(printf "|%s" "${EXCLUDE_DIRS[@]}" | sed 's/^|//')")
+    	if [ -z "$UNIQUE_DIRS" ]; then
+           echo "No unique directories found."
+           exit 1
+   	fi
+    	echo "Unique directories found: $UNIQUE_DIRS"
+    	while read -r UNIQUE_DIR; do
+       	    if [ ! -z "$UNIQUE_DIR" ]; then
+            	echo "Processing directory: $UNIQUE_DIR"
+            	FASTA_FILES=$(find "$UNIQUE_DIR" -type f -name "*.fa")
+            	if [ -z "$FASTA_FILES" ]; then
+                    echo "No FASTA files found in $UNIQUE_DIR."
+                    continue
+            	fi
+            	while read -r FASTA_FILE; do
+                    echo "Running Kraken2 analysis on $FASTA_FILE..."
+                    basename_fasta=$(basename "$FASTA_FILE" .fa)
+                    kraken2 --db "$DBNAME" "$FASTA_FILE" --output "$DATA_OUTPUT_PATH/kraken2/${basename_fasta}_kraken2_output.txt" --report "$DATA_OUTPUT_PATH/kraken2/${basename_fasta}_kraken2_report.txt" 
+            	done <<< "$FASTA_FILES"
+            fi
+    	    done <<< "$UNIQUE_DIRS"
+            create_checkpoint "kraken2"
+	fi
+ fi
 
 echo "Pipeline execution completed. If you wish to rerun the pipeline or specific steps, remember to delete the '.<step_name>_done' checkpoint files from '$DATA_OUTPUT_PATH'."
-
-
-    #Kraken2
-if ! check_for_checkpoint "kraken2"; then
-    DBNAME=$(get_config_value "Kraken2" "dbname")
-    database_setup_success=false
-
-    if [[ -z "$DBNAME" ]]; then
-        read -p "No Kraken2 database location found in the config. Do you have an existing Kraken2 database? (yes/no): " has_kraken_db
-        if [[ "$has_kraken_db" == "yes" ]]; then
-            read -p "Enter the location of your existing Kraken2 database: " DBNAME
-            # Consider the database setup successful since it's manually provided
-            database_setup_success=true
-        else
-            read -p "Enter a location for your new Kraken2 database: " DBNAME
-            echo "Creating and building new Kraken2 database at $DBNAME..."
-            mkdir -p "$DBNAME"
-            if kraken2-build --standard --db "$DBNAME"; then
-                database_setup_success=true
-            else
-                echo "Standard database build failed. Attempting to download prebuilt database..."
-                if wget -O "$DBNAME/k2_standard_20240112.tar.gz" "https://genome-idx.s3.amazonaws.com/kraken/k2_standard_20240112.tar.gz" && tar -xzf "$DBNAME/k2_standard_20240112.tar.gz" -C "$DBNAME" --strip-components=1; then
-                    rm "$DBNAME/k2_standard_20240112.tar.gz"
-                    database_setup_success=true
-                else
-                    echo "Failed to download the prebuilt database. Please check your internet connection or the URL and try again."
-                fi
-            fi
-        fi
-
-        if [[ "$database_setup_success" == true ]]; then
-            echo "Database $DBNAME setup complete."
-            sed -i "/^\[Kraken2\]/,/^\[/ {/^dbname=/ s|=.*|=$DBNAME|}" "$config_file"
-            echo "Kraken2 database location updated in config: $DBNAME"
-        else
-            echo "Kraken
 
