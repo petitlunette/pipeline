@@ -133,10 +133,11 @@ if ! check_for_checkpoint "dorado"; then
 fi
 echo "Running NanoPlot..."
 export PATH=${program_paths[NanoPlot]}:$PATH
+THREADS=$(get_config_value "Data" "default_threads")
     if [[ "$run_dorado" == "yes" ]]; then
-    ${program_paths[Nanoplot]} --fastq $DATA_OUTPUT_PATH/dorado/calls.fastq -o $DATA_OUTPUT_PATH/nanoplot
+    ${program_paths[Nanoplot]} --fastq $DATA_OUTPUT_PATH/dorado/calls.fastq --outdir $DATA_OUTPUT_PATH/nanoplot --threads $THREADS
 else
-    ${program_paths[Nanoplot]} --fastq $INPUT_PATH/*$FILE_TYPE -o $DATA_OUTPUT_PATH/nanoplot
+    ${program_paths[Nanoplot]} --fastq $INPUT_PATH/*$FILE_TYPE --outdir $DATA_OUTPUT_PATH/nanoplot --threads $THREADS
 fi
 cat $DATA_OUTPUT_PATH/nanoplot/NanoStats.txt 
 echo "Nanoplot analysis completed. Results are stored in $DATA_OUTPUT_PATH/nanoplot"
@@ -152,10 +153,11 @@ if [[ "$run_pipeline" == "yes" ]]; then
     export PATH=${program_paths[Flye]}:$PATH
     FLYE_ITERATIONS=$(get_config_value "Flye" "default_iterations")
     FLYE_QUALITY=$(get_config_value "Flye" "default_read_quality")
+    THREADS=$(get_config_value "Data" "default_threads")
     if [[ "$run_dorado" == "yes" ]]; then
-        ${PYTHON_PATH} ${program_paths[Flye]} --nano-hq $DATA_OUTPUT_PATH/dorado/calls.fastq --out-dir $DATA_OUTPUT_PATH/flye --iterations $FLYE_ITERATIONS --meta
+        ${PYTHON_PATH} ${program_paths[Flye]} --nano-hq $DATA_OUTPUT_PATH/dorado/calls.fastq --out-dir $DATA_OUTPUT_PATH/flye --iterations $FLYE_ITERATIONS --meta --threads $THREADS
     else
-        ${PYTHON_PATH} ${program_paths[Flye]} --nano-hq $INPUT_PATH/*$FILE_TYPE --out-dir $DATA_OUTPUT_PATH/flye --iterations $FLYE_ITERATIONS --meta
+        ${PYTHON_PATH} ${program_paths[Flye]} --nano-hq $INPUT_PATH/*$FILE_TYPE --out-dir $DATA_OUTPUT_PATH/flye --iterations $FLYE_ITERATIONS --meta --threads $THREADS
     fi
 create_checkpoint "flye"
 echo "Flye analysis completed. Results are stored in $DATA_OUTPUT_PATH/flye"
@@ -166,7 +168,9 @@ if ! check_for_checkpoint "meryl"; then
     cd $DATA_OUTPUT_PATH/meryl
     export PATH=${program_paths[Meryl]}:$PATH
     MERYL_KMERS=$(get_config_value "Meryl" "default_kmers")
-    meryl count k=$MERYL_KMERS $DATA_OUTPUT_PATH/flye/assembly.fasta output assembly.k$MERYL_KMERS.meryl
+    THREADS=$(get_config_value "Data" "default_threads")
+    MEMORY=$(get_config_value "Data" "default_memory")
+    meryl count k=$MERYL_KMERS $DATA_OUTPUT_PATH/flye/assembly.fasta output assembly.k$MERYL_KMERS.meryl threads=$THREADS memory=$MEMORY
     create_checkpoint "meryl"
     echo "Meryl analysis completed. Results are stored in $DATA_OUTPUT_PATH/meryl"
 fi
@@ -184,7 +188,7 @@ if ! check_for_checkpoint "medaka"; then
     echo "Running Medaka..."
     source $VIRTUAL_ENV_PATH
     export PATH=${program_paths[Medaka]}:$PATH
-    THREADS=$(get_config_value "Data" "threads")
+    THREADS=$(get_config_value "Data" "default_threads")
     TEMP_FASTQ_PATH="$INPUT_PATH/temp"
     if [[ "$run_dorado" == "yes" ]]; then
         medaka_consensus -i $DATA_OUTPUT_PATH/dorado/calls.fastq -d $DATA_OUTPUT_PATH/flye/assembly.fasta -o $DATA_OUTPUT_PATH/medaka -t $THREADS
@@ -193,9 +197,9 @@ if ! check_for_checkpoint "medaka"; then
         for gz in $INPUT_PATH/*.fastq.gz; do
             gzip -dkc "$gz" > "$TEMP_FASTQ_PATH/$(basename "${gz%.*}")"
         done
-    	medaka_consensus -i $TEMP_FASTQ_PATH -d $DATA_OUTPUT_PATH/flye/assembly.fasta -o $DATA_OUTPUT_PATH/medaka 
+    	medaka_consensus -i $TEMP_FASTQ_PATH -d $DATA_OUTPUT_PATH/flye/assembly.fasta -o $DATA_OUTPUT_PATH/medaka -t $THREADS
     else
-        medaka_consensus -i $INPUT_PATH -d $DATA_OUTPUT_PATH/flye/assembly.fasta -o $DATA_OUTPUT_PATH/medaka
+        medaka_consensus -i $INPUT_PATH -d $DATA_OUTPUT_PATH/flye/assembly.fasta -o $DATA_OUTPUT_PATH/medaka -t $THREADS
     fi
     create_checkpoint "medaka"
     echo "Medaka analysis completed. Results are stored in $DATA_OUTPUT_PATH/medaka"
@@ -205,17 +209,18 @@ fi
 if ! check_for_checkpoint "valet"; then
     echo "Running VALET for misassembly detection..."
     export PATH=${program_paths[Valet]}:$PATH
+    THREADS=$(get_config_value "Data" "default_threads")
     BASE_CMD="${PYTHON_PATH} ${program_paths[VALET]}/valet.py -a $DATA_OUTPUT_PATH/medaka/consensus.fasta -r"
     FASTQ_FILES=$(find "$INPUT_PATH" -type f -name "*.fastq" | paste -sd "," -)
     TEMP_FASTQ_FILES=$(find "$TEMP_FASTQ_PATH" -type f -name "*.fastq" | paste -sd "," -)
     FASTQ_CMD="$BASE_CMD $FASTQ_FILES"
     TEMP_FASTQ_CMD="$BASE_CMD $TEMP_FASTQ_FILES"
     if [[ "$run_dorado" == "yes" ]]; then
-        $BASE_CMD $DATA_OUTPUT_PATH/dorado/calls.fastq  -o $DATA_OUTPUT_PATH/valet
+        $BASE_CMD $DATA_OUTPUT_PATH/dorado/calls.fastq  -o $DATA_OUTPUT_PATH/valet -p $THREADS
     elif [[ "$FILE_TYPE" == "fastq.gz" ]]; then
-        $TEMP_FASTQ_CMD -o $DATA_OUTPUT_PATH/valet
+        $TEMP_FASTQ_CMD -o $DATA_OUTPUT_PATH/valet -p $THREADS
     else
-        $FASTQ_CMD -o $DATA_OUTPUT_PATH/valet
+        $FASTQ_CMD -o $DATA_OUTPUT_PATH/valet -p $THREADS
     fi
     echo "VALET analysis completed. Results are stored in $DATA_OUTPUT_PATH/valet"
     create_checkpoint "valet"
@@ -233,6 +238,7 @@ if ! check_for_checkpoint "metawrap"; then
     fi
     conda activate $METAWRAP_ENV
     export PATH=${program_paths[Metawrap]}:$PATH
+    THREADS=$(get_config_value "Data" "default_threads")
     TEMP_FASTQ_PATH="$INPUT_PATH/temp"
     META_FASTQ_FILES=$(find "$INPUT_PATH" -type f -name "*.fastq" | paste -sd " " -)
     META_TEMP_FASTQ_FILES=$(find "$TEMP_FASTQ_PATH" -type f -name "*.fastq" | paste -sd " " -)
@@ -240,21 +246,24 @@ if ! check_for_checkpoint "metawrap"; then
     META_FASTQ_CMD="$META_BASE_CMD $META_FASTQ_FILES"
     META_TEMP_FASTQ_CMD="$META_BASE_CMD $META_TEMP_FASTQ_FILES"
     if [[ "$run_dorado" == "yes" ]]; then
-        $META_BASE_CMD $DATA_OUTPUT_PATH/dorado/calls.fastq.gz
+        $META_BASE_CMD $DATA_OUTPUT_PATH/dorado/calls.fastq.gz -t $THREADS
     elif [[ "$FILE_TYPE" == "fastq.gz" ]]; then
-        $META_TEMP_FASTQ_CMD $META_TEMP_FASTQ_FILES
+        $META_TEMP_FASTQ_CMD $META_TEMP_FASTQ_FILES -t $THREADS
     else
-        $META_FASTQ_CMD $META_FASTQ_FILES
+        $META_FASTQ_CMD $META_FASTQ_FILES -t $THREADS
     fi
-    metawrap bin_refinement -o $DATA_OUTPUT_PATH/metawrap/final_bins -A $DATA_OUTPUT_PATH/metawrap/concoct_bins -B $DATA_OUTPUT_PATH/metawrap/maxbin2_bins
+    metawrap bin_refinement -o $DATA_OUTPUT_PATH/metawrap/final_bins -A $DATA_OUTPUT_PATH/metawrap/concoct_bins -B $DATA_OUTPUT_PATH/metawrap/maxbin2_bins -t $THREADS
     conda deactivate
     create_checkpoint "metawrap"
     echo "Metawrap analysis completed. Results are stored in $DATA_OUTPUT_PATH/metawrap"
 fi
-
+fi
+    
 #Kraken2 
+
 if ! check_for_checkpoint "kraken2"; then
     DBNAME=$(get_config_value "Kraken2" "dbname")
+    THREADS=$(get_config_value "Data" "default_threads")
     database_setup_success=false
     if [[ -z "$DBNAME" ]]; then
         read -p "No Kraken2 database location found in the config. Do you have an existing Kraken2 database? (yes/no): " has_kraken_db
@@ -312,7 +321,7 @@ if ! check_for_checkpoint "kraken2"; then
             	    while read -r FASTA_FILE; do
                     	echo "Running Kraken2 analysis on $FASTA_FILE..."
                     	basename_fasta=$(basename "$FASTA_FILE" .fa)
-                    	kraken2 --db "$DBNAME" "$FASTA_FILE" --output "$DATA_OUTPUT_PATH/kraken2/${basename_fasta}_kraken2_output.txt" --report "$DATA_OUTPUT_PATH/kraken2/${basename_fasta}_kraken2_report.txt" 
+                    	kraken2 --db "$DBNAME" "$FASTA_FILE" --output "$DATA_OUTPUT_PATH/kraken2/${basename_fasta}_kraken2_output.txt" --report "$DATA_OUTPUT_PATH/kraken2/${basename_fasta}_kraken2_report.txt" --threads $THREADS 
             	    done <<< "$FASTA_FILES"
             	fi
     	    	done <<< "$UNIQUE_DIRS"
@@ -323,6 +332,8 @@ if ! check_for_checkpoint "kraken2"; then
     	create_checkpoint "kraken2"
     fi
 
+
 echo "Pipeline execution completed. If you wish to rerun the pipeline or specific steps, remember to delete the '.<step_name>_done' checkpoint files from '$DATA_OUTPUT_PATH'."
 
 
+    
