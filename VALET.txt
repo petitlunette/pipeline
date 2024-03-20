@@ -76,3 +76,44 @@ def vcf_to_df(vcf_files):
         # Print the error message and exit
         print(f"Error: {e}")
         sys.exit(1)
+
+
+
+def calculate_contig_coverage(options, output_dir, pileup_file):
+    """
+    Calculate contig coverage.  The coverage of a contig is the mean per-bp coverage.
+
+    Args:
+        options: command line options.
+        pileup_file: filename of the samtools formatted pileup file.
+    Returns:
+        Filename of the coverage file.
+    """
+
+    coverage_filename = output_dir + '/coverage/temp.cvg'
+    coverage_file = open(coverage_filename, 'w')
+
+    prev_contig = None
+    curr_contig = None
+
+    length = 0
+    curr_coverage = 0
+
+    for record in open(pileup_file, 'r'):
+        fields = record.strip().split()
+
+        if prev_contig != fields[0]:
+            if prev_contig:
+                coverage_file.write(prev_contig + '\t' + str(float(curr_coverage) / length) + '\n')
+
+            prev_contig = fields[0]
+            length = 0
+            curr_coverage = 0
+
+        curr_coverage += int(fields[3])
+        length += 1
+    if prev_contig:
+        coverage_file.write(prev_contig + '\t' + str(float(curr_coverage) / length) + '\n')
+    coverage_file.close()
+
+    return coverage_filename
