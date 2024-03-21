@@ -1,0 +1,39 @@
+import sys
+import os
+from Bio import SeqIO
+
+# Check that a directory was provided as an argument
+if len(sys.argv) < 2:
+    print("Usage: python check_fastq.py <directory_with_fastq_files>")
+    sys.exit(1)
+
+# Get the directory from the command line argument
+fastq_dir = sys.argv[1]
+
+# List to hold the names of broken files
+broken_files = []
+
+# Go through each file in the directory provided
+for filename in os.listdir(fastq_dir):
+    if filename.endswith(".fastq"):
+        fastq_path = os.path.join(fastq_dir, filename)
+        try:
+            # Attempt to parse each file to check if it's correctly formatted
+            with open(fastq_path, "r") as handle:
+                for record in SeqIO.parse(handle, "fastq"):
+                    # Check for mismatched length between sequence and quality
+                    seq_len = len(record.seq)
+                    qual_len = len(record.letter_annotations["phred_quality"])
+                    if seq_len != qual_len:
+                        raise ValueError(f"Mismatch in sequence and quality lengths for record {record.id}")
+        except ValueError as e:
+            # If an error is encountered, add the file name to the list of broken files
+            broken_files.append(filename)
+
+# Print out the list of broken files
+if broken_files:
+    print("Broken FASTQ files:")
+    for file in broken_files:
+        print(file)
+else:
+    print("No broken FASTQ files found.")
