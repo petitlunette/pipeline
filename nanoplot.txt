@@ -1,0 +1,55 @@
+If you read this then NanoPlot 1.42.0 has crashed :-(
+Please try updating NanoPlot and see if that helps...
+
+If not, please report this issue at https://github.com/wdecoster/NanoPlot/issues
+If you could include the log file that would be really helpful.
+Thanks!
+
+
+
+concurrent.futures.process._RemoteTraceback: 
+"""
+Traceback (most recent call last):
+  File "/opt/anaconda3/lib/python3.10/concurrent/futures/process.py", line 246, in _process_worker
+    r = call_item.fn(*call_item.args, **call_item.kwargs)
+  File "/opt/anaconda3/lib/python3.10/concurrent/futures/process.py", line 205, in _process_chunk
+    return [fn(*args) for args in chunk]
+  File "/opt/anaconda3/lib/python3.10/concurrent/futures/process.py", line 205, in <listcomp>
+    return [fn(*args) for args in chunk]
+  File "/mnt/data/lj752/tools/medaka_env/lib/python3.10/site-packages/nanoget/extraction_functions.py", line 396, in process_fastq_plain
+    data=[res for res in extract_from_fastq(inputfastq) if res],
+  File "/mnt/data/lj752/tools/medaka_env/lib/python3.10/site-packages/nanoget/extraction_functions.py", line 396, in <listcomp>
+    data=[res for res in extract_from_fastq(inputfastq) if res],
+  File "/mnt/data/lj752/tools/medaka_env/lib/python3.10/site-packages/nanoget/extraction_functions.py", line 407, in extract_from_fastq
+    for rec in SeqIO.parse(fq, "fastq"):
+  File "/mnt/data/lj752/tools/medaka_env/lib/python3.10/site-packages/Bio/SeqIO/Interfaces.py", line 72, in __next__
+    return next(self.records)
+  File "/mnt/data/lj752/tools/medaka_env/lib/python3.10/site-packages/Bio/SeqIO/QualityIO.py", line 1123, in iterate
+    for title_line, seq_string, quality_string in FastqGeneralIterator(handle):
+  File "/mnt/data/lj752/tools/medaka_env/lib/python3.10/site-packages/Bio/SeqIO/QualityIO.py", line 980, in FastqGeneralIterator
+    raise ValueError(
+ValueError: Lengths of sequence and quality values differs for 6b06316e-9d92-45b8-b342-6687e580b6a2 runid=7347fc5ebaf2cdc26eec9bf10c73ac20f1cc020d sampleid=EVEN read=6909 ch=240 start_time=2018-10-12T02:22:22Z (4073 and 9047).
+"""
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/mnt/data/lj752/tools/medaka_env/bin/NanoPlot", line 8, in <module>
+    sys.exit(main())
+  File "/mnt/data/lj752/tools/medaka_env/lib/python3.10/site-packages/nanoplot/NanoPlot.py", line 62, in main
+    datadf = get_input(
+  File "/mnt/data/lj752/tools/medaka_env/lib/python3.10/site-packages/nanoget/nanoget.py", line 110, in get_input
+    dfs=[out for out in executor.map(extraction_function, files)],
+  File "/mnt/data/lj752/tools/medaka_env/lib/python3.10/site-packages/nanoget/nanoget.py", line 110, in <listcomp>
+    dfs=[out for out in executor.map(extraction_function, files)],
+  File "/opt/anaconda3/lib/python3.10/concurrent/futures/process.py", line 570, in _chain_from_iterable_of_lists
+    for element in iterable:
+  File "/opt/anaconda3/lib/python3.10/concurrent/futures/_base.py", line 621, in result_iterator
+    yield _result_or_cancel(fs.pop())
+  File "/opt/anaconda3/lib/python3.10/concurrent/futures/_base.py", line 319, in _result_or_cancel
+    return fut.result(timeout)
+  File "/opt/anaconda3/lib/python3.10/concurrent/futures/_base.py", line 451, in result
+    return self.__get_result()
+  File "/opt/anaconda3/lib/python3.10/concurrent/futures/_base.py", line 403, in __get_result
+    raise self._exception
+ValueError: Lengths of sequence and quality values differs for 6b06316e-9d92-45b8-b342-6687e580b6a2 runid=7347fc5ebaf2cdc26eec9bf10c73ac20f1cc020d sampleid=EVEN read=6909 ch=240 start_time=2018-10-12T02:22:22Z (4073 and 9047).
