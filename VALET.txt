@@ -22,7 +22,7 @@ RESULTS:	 output/asm_0/coverage/temp.cvg
 TypeError: '>' not supported between instances of 'str' and 'int'
 
 
-
+#laurens code
 import pandas as pd
 import sys
 
@@ -60,7 +60,7 @@ def vcf_to_df(vcf_files):
         sys.exit(1)
 
 
-
+#this is the valet code that is having the issue
 def calculate_contig_coverage(options, output_dir, pileup_file):
     """
     Calculate contig coverage.  The coverage of a contig is the mean per-bp coverage.
