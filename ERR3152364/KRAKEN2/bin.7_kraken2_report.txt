@@ -1,0 +1,11 @@
+100.00	2	0	R	1	root
+100.00	2	0	R1	131567	  cellular organisms
+100.00	2	0	D	2	    Bacteria
+100.00	2	0	P	1224	      Pseudomonadota
+100.00	2	0	C	1236	        Gammaproteobacteria
+100.00	2	0	O	91347	          Enterobacterales
+100.00	2	0	F	543	            Enterobacteriaceae
+100.00	2	0	G	561	              Escherichia
+100.00	2	0	S	562	                Escherichia coli
+ 50.00	1	1	S1	83334	                  Escherichia coli O157:H7
+ 50.00	1	1	S1	1045010	                  Escherichia coli O157
