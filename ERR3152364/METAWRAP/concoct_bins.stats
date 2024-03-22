@@ -1,0 +1,13 @@
+bin	completeness	contamination	GC	lineage	N50	size	binner
+bin.10	81.16	1.561	0.328	Staphylococcus	1352779	2661653	binsA
+bin.11	83.48	0.172	0.661	Pseudomonadales	6772552	6772552	binsA
+bin.12	0.0	0.0	0.471	root	9634	289898	binsA
+bin.14	77.12	0.819	0.380	Bacilli	2983967	2983967	binsA
+bin.15	72.35	55.81	0.383	Archaea	444963	11583272	binsA
+bin.2	75.01	0.546	0.522	Lactobacillales	1881930	1895969	binsA
+bin.4	83.85	65.27	0.515	Bacteria	4734389	9488835	binsA
+bin.5	74.51	1.065	0.440	Bacillus	4020885	4020885	binsA
+bin.6	0.0	0.0	0.161	root	80280	88082	binsA
+bin.7	0.0	0.0	0.484	root	109638	158838	binsA
+bin.8	0.0	0.0	0.356	root	32548	107016	binsA
+bin.9	73.43	1.654	0.376	Lactobacillales	2827648	2870896	binsA
