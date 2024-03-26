@@ -126,7 +126,7 @@ if ! check_for_checkpoint "dorado"; then
         export PATH=${program_paths[Dorado]}:$PATH
         DORADO_MODEL=$(get_config_value "Dorado" "default_model")
         dorado download --model $DORADO_MODEL
-        dorado basecaller $DORADO_MODEL $INPUT_PATH/ > calls.fastq
+        dorado basecaller $DORADO_MODEL $INPUT_PATH/ > calls.fastq --emit-fastq
         create_checkpoint "dorado"
         echo "Dorado analysis completed. Results are stored in $DATA_OUTPUT_PATH/dorado"
     fi
