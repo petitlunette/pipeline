@@ -1,0 +1,49 @@
+Running Dorado...
+[2024-03-26 13:38:09.062] [info]  - downloading dna_r9.4.1_e8_sup@v3.3 with httplib
+[2024-03-26 13:38:10.931] [info]  - Note: FASTQ output is not recommended as not all data can be preserved.
+[2024-03-26 13:38:10.931] [info] > Creating basecall pipeline
+HDF5-DIAG: Error detected in HDF5 (1.8.12) thread 0:
+  #000: ../../src/H5G.c line 463 in H5Gopen2(): unable to open group
+    major: Symbol table
+    minor: Can't open object
+  #001: ../../src/H5Gint.c line 320 in H5G__open_name(): group not found
+    major: Symbol table
+    minor: Object not found
+  #002: ../../src/H5Gloc.c line 430 in H5G_loc_find(): can't find object
+    major: Symbol table
+    minor: Object not found
+  #003: ../../src/H5Gtraverse.c line 861 in H5G_traverse(): internal path traversal failed
+    major: Symbol table
+    minor: Object not found
+  #004: ../../src/H5Gtraverse.c line 641 in H5G_traverse_real(): traversal operator failed
+    major: Symbol table
+    minor: Callback failed
+  #005: ../../src/H5Gloc.c line 385 in H5G_loc_find_cb(): object 'channel_id' doesn't exist
+    major: Symbol table
+    minor: Object not found
+[2024-03-26 13:39:08.771] [warning] Could not check that model sampling rate and data sampling rate match. Proceed with caution. Reason: Unable to open the group "channel_id": (Symbol table) Object not found
+[2024-03-26 13:39:28.918] [info]  - set batch size for cuda:0 to 896
+[2024-03-26 13:39:30.166] [warning] FAST5 support is unoptimized and will result in poor performance. Please convert your dataset to POD5: https://pod5-file-format.readthedocs.io/en/latest/docs/tools.html#pod5-convert-fast5
+HDF5-DIAG: Error detected in HDF5 (1.8.12) thread 0:
+  #000: ../../src/H5G.c line 463 in H5Gopen2(): unable to open group
+    major: Symbol table
+    minor: Can't open object
+  #001: ../../src/H5Gint.c line 320 in H5G__open_name(): group not found
+    major: Symbol table
+    minor: Object not found
+  #002: ../../src/H5Gloc.c line 430 in H5G_loc_find(): can't find object
+    major: Symbol table
+    minor: Object not found
+  #003: ../../src/H5Gtraverse.c line 861 in H5G_traverse(): internal path traversal failed
+    major: Symbol table
+    minor: Object not found
+  #004: ../../src/H5Gtraverse.c line 641 in H5G_traverse_real(): traversal operator failed
+    major: Symbol table
+    minor: Callback failed
+  #005: ../../src/H5Gloc.c line 385 in H5G_loc_find_cb(): object 'channel_id' doesn't exist
+    major: Symbol table
+    minor: Object not found
+[2024-03-26 13:39:30.681] [error] Unable to open the group "channel_id": (Symbol table) Object not found
+Dorado analysis completed. Results are stored in /mnt/data/lj752/data/MSc_training/26_MAR_RUN/data_output/dorado
+Running NanoPlot...
+Fatal: No reads found in input.
