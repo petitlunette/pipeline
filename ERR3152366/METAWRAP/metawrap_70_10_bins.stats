@@ -1,0 +1,3 @@
+bin	completeness	contamination	GC	lineage	N50	size	binner
+bin.2	77.30	0.659	0.661	Pseudomonadales	6764296	6764296	binsA
+bin.1	74.30	0.546	0.380	Bacilli	2973809	2973809	binsA
