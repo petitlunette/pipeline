@@ -206,7 +206,15 @@ if ! check_for_checkpoint "medaka"; then
     echo "Medaka analysis completed. Results are stored in $DATA_OUTPUT_PATH/medaka"
     deactivate
 fi 
-        
+
+#if ! check_for_checkpoint "racon"; then
+#    echo "Running Racon..."
+ #   export PATH=${program_paths[Racon]}:$PATH
+  #  ${program_paths[Racon]} $DATA_OUTPUT_PATH/medaka/consensus.fasta $DATA_OUTPUT_PATH/medaka/overlaps.paf $DATA_OUTPUT_PATH/medaka/consensus.fasta > $DATA_OUTPUT_PATH/racon/racon_1.fasta
+   # create_checkpoint "racon"
+    #echo "Racon analysis completed. Results are stored in $DATA_OUTPUT_PATH/racon"
+#fi
+
 if ! check_for_checkpoint "valet"; then
     echo "Running VALET for misassembly detection..."
     export PATH=${program_paths[Valet]}:$PATH
