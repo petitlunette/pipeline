@@ -189,6 +189,7 @@ if ! check_for_checkpoint "medaka"; then
     source $VIRTUAL_ENV_PATH
     export PATH=${program_paths[Medaka]}:$PATH
     THREADS=$(get_config_value "Data" "default_threads")
+    THREADS=$(get_config_value "Medaka" "default_model")
     TEMP_FASTQ_PATH="$INPUT_PATH/temp"
     if [[ "$run_dorado" == "yes" ]]; then
         medaka_consensus -i $DATA_OUTPUT_PATH/dorado/calls.fastq -d $DATA_OUTPUT_PATH/flye/assembly.fasta -o $DATA_OUTPUT_PATH/medaka -t $THREADS
@@ -197,14 +198,14 @@ if ! check_for_checkpoint "medaka"; then
         for gz in $INPUT_PATH/*.fastq.gz; do
             gzip -dkc "$gz" > "$TEMP_FASTQ_PATH/$(basename "${gz%.*}")"
         done
-    	medaka_consensus -i $TEMP_FASTQ_PATH -d $DATA_OUTPUT_PATH/flye/assembly.fasta -o $DATA_OUTPUT_PATH/medaka -t $THREADS
+    	medaka_consensus -i $TEMP_FASTQ_PATH -d $DATA_OUTPUT_PATH/flye/assembly.fasta -o $DATA_OUTPUT_PATH/medaka -t $THREADS -m $MODEL
     else
-        medaka_consensus -i $INPUT_PATH -d $DATA_OUTPUT_PATH/flye/assembly.fasta -o $DATA_OUTPUT_PATH/medaka -t $THREADS
+        medaka_consensus -i $INPUT_PATH -d $DATA_OUTPUT_PATH/flye/assembly.fasta -o $DATA_OUTPUT_PATH/medaka -t $THREADS -m $MODEL
     fi
     create_checkpoint "medaka"
     echo "Medaka analysis completed. Results are stored in $DATA_OUTPUT_PATH/medaka"
     deactivate
-fi  
+fi 
         
 if ! check_for_checkpoint "valet"; then
     echo "Running VALET for misassembly detection..."
