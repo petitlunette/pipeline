@@ -22,42 +22,6 @@ RESULTS:	 output/asm_0/coverage/temp.cvg
 TypeError: '>' not supported between instances of 'str' and 'int'
 
 
-#laurens code
-import pandas as pd
-import sys
-
-def vcf_to_df(vcf_files):
-    """
-    Convert a list of VCF files to a DataFrame.
-    """
-    try:
-        # Initialize an empty list to store the DataFrames
-        dfs = []
-
-        # Iterate over each VCF file in the list
-        for vcf_file in vcf_files:
-            # Read the VCF file into a DataFrame
-            df = pd.read_csv(vcf_file, sep='\t', comment='#', header=None)
-
-            # Append the DataFrame to the list
-            dfs.append(df)
-
-        # Concatenate the list of DataFrames
-        vcf_df = pd.concat(dfs, ignore_index=True)
-
-        # Drop the duplicate columns
-        vcf_df = vcf_df.loc[:, ~vcf_df.columns.duplicated()]
-
-        # Rename the columns to match the original VCF file
-        vcf_df.columns = vcf_df.columns.map(lambda x: x.split('_')[1] if '_' in x else x)
-
-        # Return the concatenated DataFrame
-        return vcf_df
-
-    except Exception as e:
-        # Print the error message and exit
-        print(f"Error: {e}")
-        sys.exit(1)
 
 
 #this is the valet code that is having the issue
@@ -99,3 +63,60 @@ def calculate_contig_coverage(options, output_dir, pileup_file):
     coverage_file.close()
 
     return coverage_filename
+
+
+
+
+##Lauren's proposition to solve issue
+
+The following are potentially the reasons why:
+The python function 'clculate_contig_coverage' does not directly perform any comparison operations ('>') between strings and integers. This suggests that the error might not be directly related to the operations within this function but may stem from how the function integrates with the rest of the pipeline or how the data is passed into it.
+
+Can we try the following:
+1. Ensure file closing with context managers: use context managers ('with' statement) to handle file opening and closing. This would ensure files are properly closed even if an error occurs.
+2. Type checking and error handling: while the function assumes well-formatted input from the pileup file, implementing basic error handling and validation can maybe catch and address issues with unexpected file contents.
+3. Debugging information such as print statements.
+
+The following code has been adapted to address the above mentioned, some things may have to be adjusted such as the debugging prints ('print(f"Error processing record: {record.strip()}")'):
+
+def calculate_contig_coverage(options, output_dir, pileup_file):
+    """
+    Calculate contig coverage. The coverage of a contig is the mean per-bp coverage.
+    
+    Args:
+        options: command line options.
+        pileup_file: filename of the samtools formatted pileup file.
+    Returns:
+        Filename of the coverage file.
+    """
+
+    coverage_filename = f"{output_dir}/coverage/temp.cvg"
+
+    with open(coverage_filename, 'w') as coverage_file, open(pileup_file, 'r') as pileup:
+        prev_contig = None
+        curr_coverage = 0
+        length = 0
+
+        for record in pileup:
+            fields = record.strip().split()
+            try:
+                if len(fields) < 4:
+                    continue  # Skip incomplete records
+                if prev_contig != fields[0]:
+                    if prev_contig is not None:
+                        coverage_file.write(f"{prev_contig}\t{curr_coverage / length:.2f}\n")
+                    prev_contig = fields[0]
+                    length = 0
+                    curr_coverage = 0
+
+                curr_coverage += int(fields[3])
+                length += 1
+            except ValueError:
+                print(f"Error processing record: {record.strip()}")
+                continue  # Skip records with conversion errors
+
+        if prev_contig and length > 0:
+            coverage_file.write(f"{prev_contig}\t{curr_coverage / length:.2f}\n")
+
+    return coverage_filename
+
