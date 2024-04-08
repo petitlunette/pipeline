@@ -1,0 +1,11 @@
+100.00	1	0	R	1	root
+100.00	1	0	R1	131567	  cellular organisms
+100.00	1	0	D	2	    Bacteria
+100.00	1	0	D1	1783272	      Terrabacteria group
+100.00	1	0	P	1239	        Bacillota
+100.00	1	0	C	91061	          Bacilli
+100.00	1	0	O	1385	            Bacillales
+100.00	1	0	F	186820	              Listeriaceae
+100.00	1	0	G	1637	                Listeria
+100.00	1	0	S	1639	                  Listeria monocytogenes
+100.00	1	1	S1	930781	                    Listeria monocytogenes J1816
