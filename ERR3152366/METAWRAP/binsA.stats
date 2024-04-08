@@ -1,7 +1,7 @@
 bin	completeness	contamination	GC	lineage	N50	size	binner
-bin.1	74.30	0.546	0.380	Bacilli	2973809	2973809	binsA
-bin.2	67.04	0.988	0.440	Bacillus	3264277	4004799	binsA
-bin.3	0.0	0.0	0.161	root	79836	79836	binsA
-bin.4	77.30	0.659	0.661	Pseudomonadales	6764296	6764296	binsA
-bin.5	0.0	0.0	0.512	root	25291	547727	binsA
-bin.7	53.04	27.30	0.381	Archaea	72653	10947077	binsA
+bin.0	73.53	0.273	0.380	Bacilli	2973851	2973851	binsA
+bin.2	67.32	1.638	0.440	Bacillus	3264368	4004836	binsA
+bin.4	53.04	27.30	0.381	Archaea	71787	10939539	binsA
+bin.5	76.45	0.740	0.661	Pseudomonadales	6763397	6763397	binsA
+bin.6	0.0	0.0	0.512	root	25291	547727	binsA
+bin.7	0.0	0.0	0.161	root	79849	79849	binsA
