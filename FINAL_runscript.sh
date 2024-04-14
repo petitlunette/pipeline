@@ -142,9 +142,9 @@ if ! check_for_checkpoint "flye"; then
     FLYE_QUALITY=$(get_config_value "Flye" "default_read_quality")
     THREADS=$(get_config_value "Data" "default_threads")
     if [[ "$run_dorado" == "yes" ]]; then
-        ${PYTHON_PATH} ${program_paths[Flye]} --nano-hq $DATA_OUTPUT_PATH/dorado/calls.fastq --out-dir $DATA_OUTPUT_PATH/flye --iterations $FLYE_ITERATIONS --meta --threads $THREADS
+        ${PYTHON_PATH} ${program_paths[Flye]} $FLYE_QUALITY $DATA_OUTPUT_PATH/dorado/calls.fastq --out-dir $DATA_OUTPUT_PATH/flye --iterations $FLYE_ITERATIONS --meta --threads $THREADS
     else
-        ${PYTHON_PATH} ${program_paths[Flye]} --nano-hq $INPUT_PATH/*$FILE_TYPE --out-dir $DATA_OUTPUT_PATH/flye --iterations $FLYE_ITERATIONS --meta --threads $THREADS
+        ${PYTHON_PATH} ${program_paths[Flye]} $FLYE_QUALITY $INPUT_PATH/*$FILE_TYPE --out-dir $DATA_OUTPUT_PATH/flye --iterations $FLYE_ITERATIONS --meta --threads $THREADS
     fi
 create_checkpoint "flye"
 echo "Flye analysis completed. Results are stored in $DATA_OUTPUT_PATH/flye"
