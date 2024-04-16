@@ -1,0 +1,10 @@
+100.00	2	0	R	1	root
+100.00	2	0	R1	131567	  cellular organisms
+100.00	2	0	D	2	    Bacteria
+100.00	2	0	D1	1783272	      Terrabacteria group
+100.00	2	0	P	1239	        Bacillota
+100.00	2	0	C	91061	          Bacilli
+100.00	2	0	O	186826	            Lactobacillales
+100.00	2	0	F	33958	              Lactobacillaceae
+100.00	2	0	G	2742598	                Limosilactobacillus
+100.00	2	2	S	1613	                  Limosilactobacillus fermentum
