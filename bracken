@@ -1,6 +1,7 @@
 if ! check_for_checkpoint "bracken"; then
     eval "$(conda shell.bash hook)"
     BRACKEN_ENV=$(get_config_value "Bracken" "conda_env")
+    export PATH=${program_paths[Bracken]}:$PATH
     if [ -z "$BRACKEN_ENV" ]; then
         echo "Conda environment name not found in config.ini. Please specify it under the [Bracken] section."
         exit 1
@@ -17,14 +18,15 @@ if ! check_for_checkpoint "bracken"; then
     log_progress "Starting Bracken analysis..."
     find "$DATA_OUTPUT_PATH/kraken2/" -type f -name "*._report.txt" | while read report_file; do
     	base_report=$(basename "$REPORT" "_report.txt")
-    	bracken -d $DBNAME -i $REPORT -o $DATA_OUTPUT_PATH/braken/${base_report}.txt -r $READ_LEN -l S -t $THREADS
+ #IF I USED "$DBNAME/k2_standard_20240112.tar.gz"  I CAN JUST DO THIS B/C IT DOWNLOADS THE ABUNDANCE
+#OTHERWISE NEED TO DO A BRACKEN BUILD FOR EXISTING KRAKEN DB OR STANDARD DB
+    	python estimate_abundance.py -i $REPORT -k $DBNAME/database${READ_LEN}mers.kmer_distrib -o $DATA_OUTPUT_PATH/braken/${base_report}.txt -l S -t $THREADS
     	log_progress "Bracken analysis completed for $base_report..."
     done
     create_checkpoint "bracken"
     log_progress "Bracken analysis completed. Results are stored in $DATA_OUTPUT_PATH/bracken"
     conda deactivate
 fi
-
 2024-04-16 15:05:18 - Using Conda environment: biopy38_env
 2024-04-16 15:05:19 - Starting Bracken analysis...
 2024-04-16 15:05:19 - Building Bracken database using /mnt/data/lj752/data/MSc_training/scripting/K2_DB_DOWNLOAD/...
