@@ -1,3 +1,5 @@
+#Kraken2 
+
 if ! check_for_checkpoint "kraken2"; then
     DBNAME=$(get_config_value "Kraken2" "dbname")
     THREADS=$(get_config_value "Data" "default_threads")
@@ -7,15 +9,15 @@ if ! check_for_checkpoint "kraken2"; then
         read -p "No Kraken2 database location found in the config. Do you have an existing Kraken2 database? (yes/no): " has_kraken_db
         if [[ "$has_kraken_db" == "yes" ]]; then
             read -p "Enter the location of your existing Kraken2 database: " DBNAME
-	    database_setup_success=true
-	    database_setup_manual=false
+	database_setup_success=true
+	database_setup_manual=false
         else
             read -p "Enter a location for your new Kraken2 database: " DBNAME
             log_progress "Creating and building new Kraken2 database at $DBNAME..."
-	    mkdir -p "$DBNAME"
+	mkdir -p "$DBNAME"
             if kraken2-build --standard --db "$DBNAME"; then
-	    	database_setup_success=true
-		database_setup_manual=false
+	    database_setup_success=true
+	database_setup_manual=false
       	    else
                 log_progress "Standard database build failed. Attempting to download prebuilt database..."
                 wget -O "$DBNAME/k2_standard_20240112.tar.gz" https://genome-idx.s3.amazonaws.com/kraken/k2_standard_20240112.tar.gz
@@ -82,15 +84,14 @@ if ! check_for_checkpoint "bracken"; then
     if [ -z "$BRACKEN_ENV" ]; then
         echo "Conda environment name not found in config.ini. Please specify it under the [Bracken] section."
         exit 1
-    else
-        log_progress "Using Conda environment: $BRACKEN_ENV"
     fi
+    echo "Using Conda environment: $BRACKEN_ENV"
     conda activate $BRACKEN_ENV
     log_progress "Starting Bracken analysis..."
     DBNAME=$(get_config_value "Kraken2" "dbname")
     THREADS=$(get_config_value "Data" "default_threads")
     READ_LEN=$(get_config_value "Bracken" "read_length")
-    if $database_setup_manual=false 
+    if [[ "$database_setup_manual" == "false" ]]; then
     	log_progress "Building Bracken database using $DBNAME..."
     	bracken-build -d $DBNAME  -t $THREADS -l $READ_LEN
     	log_progress "Starting Bracken analysis..."
@@ -100,12 +101,17 @@ if ! check_for_checkpoint "bracken"; then
 	    log_progress "Bracken analysis completed for $base_report..."
         done
     else
-    	python estimate_abundance.py -i $REPORT -k $DBNAME/database${READ_LEN}mers.kmer_distrib -o $DATA_OUTPUT_PATH/braken/${base_report}.txt -l S -t $THREADS
+    	find "$DATA_OUTPUT_PATH/kraken2/" -type f -name "*._report.txt" | while read report_file; do
+    	    base_report=$(basename "$REPORT" "_report.txt")
+    	python est_abundance.py -i $REPORT -k $DBNAME/database${READ_LEN}mers.kmer_distrib -o $DATA_OUTPUT_PATH/braken/${base_report}.txt -l S -t $THREADS
+    	log_progress "Bracken analysis completed for $base_report..."	
+    	done
     fi
     create_checkpoint "bracken"
     log_progress "Bracken analysis completed. Results are stored in $DATA_OUTPUT_PATH/bracken"
     conda deactivate
 fi
+
 
 
 2024-04-16 15:05:18 - Using Conda environment: biopy38_env
