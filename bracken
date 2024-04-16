@@ -38,3 +38,9 @@ fi
  ERROR: Database library /mnt/data/lj752/data/MSc_training/scripting/K2_DB_DOWNLOAD/library does not exist
 2024-04-16 15:05:19 - Starting Bracken analysis...
 
+
+ bracken-build -d ${KRAKEN_DB} -t ${THREADS} -k ${KMER_LEN} -l ${READ_LEN}
+    ${KRAKEN_DB} is the path to a built Kraken database which also must contain:
+        the taxonomy/nodes.dmp file
+        and library sequences *.fna, *.fa, or *.fasta in the library directory.
+
