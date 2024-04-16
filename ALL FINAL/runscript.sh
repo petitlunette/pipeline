@@ -112,8 +112,6 @@ mkdir -p $DATA_OUTPUT_PATH/flye
 mkdir -p $DATA_OUTPUT_PATH/meryl
 mkdir -p $DATA_OUTPUT_PATH/merqury
 mkdir -p $DATA_OUTPUT_PATH/medaka
-mkdir -p $DATA_OUTPUT_PATH/racon
-mkdir -p $DATA_OUTPUT_PATH/valet
 mkdir -p $DATA_OUTPUT_PATH/metawrap
 mkdir -p $DATA_OUTPUT_PATH/kraken2
 
