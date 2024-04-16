@@ -1,9 +1,40 @@
-
 if ! check_for_checkpoint "bracken"; then
-    conda activate biopy38_env
+    eval "$(conda shell.bash hook)"
+    BRACKEN_ENV=$(get_config_value "Bracken" "conda_env")
+    if [ -z "$BRACKEN_ENV" ]; then
+        echo "Conda environment name not found in config.ini. Please specify it under the [Bracken] section."
+        exit 1
+    else
+        log_progress "Using Conda environment: $BRACKEN_ENV"
+    fi
+    conda activate $BRACKEN_ENV
+    log_progress "Starting Bracken analysis..."
     DBNAME=$(get_config_value "Kraken2" "dbname")
     THREADS=$(get_config_value "Data" "default_threads")
     READ_LEN=$(get_config_value "Bracken" "read_length")
+    log_progress "Building Bracken database using $DBNAME..."
     bracken-build -d $DBNAME  -t $THREADS -l $READ_LEN
-    basename_report=$(basename "$DATA_OUTPUT_PATH/kraken2/" .fa)
-    bracken -d $DBNAME -i $DATA_OUTPUT_PATH/kraken2/ -o $DATA_OUTPUT_PATH/braken/${basename_fasta}_r.txt -r $READ_LEN -l S -t $threads
+    log_progress "Starting Bracken analysis..."
+    find "$DATA_OUTPUT_PATH/kraken2/" -type f -name "*._report.txt" | while read report_file; do
+    	base_report=$(basename "$REPORT" "_report.txt")
+    	bracken -d $DBNAME -i $REPORT -o $DATA_OUTPUT_PATH/braken/${base_report}.txt -r $READ_LEN -l S -t $THREADS
+    	log_progress "Bracken analysis completed for $base_report..."
+    done
+    create_checkpoint "bracken"
+    log_progress "Bracken analysis completed. Results are stored in $DATA_OUTPUT_PATH/bracken"
+    conda deactivate
+fi
+
+2024-04-16 15:05:18 - Using Conda environment: biopy38_env
+2024-04-16 15:05:19 - Starting Bracken analysis...
+2024-04-16 15:05:19 - Building Bracken database using /mnt/data/lj752/data/MSc_training/scripting/K2_DB_DOWNLOAD/...
+ >> Selected Options:
+       kmer length = 35
+       read length = 100
+       database    = /mnt/data/lj752/data/MSc_training/scripting/K2_DB_DOWNLOAD/
+       threads     = 10
+       kraken type = kraken2
+ >> Checking for Valid Options...
+ ERROR: Database library /mnt/data/lj752/data/MSc_training/scripting/K2_DB_DOWNLOAD/library does not exist
+2024-04-16 15:05:19 - Starting Bracken analysis...
+
