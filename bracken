@@ -1,0 +1,9 @@
+
+if ! check_for_checkpoint "bracken"; then
+    conda activate biopy38_env
+    DBNAME=$(get_config_value "Kraken2" "dbname")
+    THREADS=$(get_config_value "Data" "default_threads")
+    READ_LEN=$(get_config_value "Bracken" "read_length")
+    bracken-build -d $DBNAME  -t $THREADS -l $READ_LEN
+    basename_report=$(basename "$DATA_OUTPUT_PATH/kraken2/" .fa)
+    bracken -d $DBNAME -i $DATA_OUTPUT_PATH/kraken2/ -o $DATA_OUTPUT_PATH/braken/${basename_fasta}_r.txt -r $READ_LEN -l S -t $threads
