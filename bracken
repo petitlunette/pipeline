@@ -109,3 +109,9 @@ if ! check_for_checkpoint "bracken"; then
     log_progress "Bracken analysis completed. Results are stored in $DATA_OUTPUT_PATH/bracken"
     conda deactivate
 fi
+
+
+(biopy38_env) lj752@bspc-linux-13:/mnt/data/lj752/data/MSc_training/15_APR_final/366$ python /mnt/data/lj752/tools/miniforge/envs/biopy38_env/bin/est_abundance.py -i /mnt/data/lj752/data/MSc_training/15_APR_final/366/data_output/kraken2/bin.1_kraken2_report.txt -k /mnt/data/lj752/data/MSc_training/scripting/K2_DB_DOWNLOAD/database100mers.kmer_distrib  -o /mnt/data/lj752/data/MSc_training/15_APR_final/366/data_output/braken/bin.1_bracken.txt -l S -t 10
+PROGRAM START TIME: 04-17-2024 13:17:20
+>> Checking report file: /mnt/data/lj752/data/MSc_training/15_APR_final/366/data_output/kraken2/bin.1_kraken2_report.txt
+Error: no reads found. Please check your Kraken report
