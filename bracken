@@ -64,7 +64,7 @@ if ! check_for_checkpoint "kraken2"; then
             	    while read -r FASTA_FILE; do
                     	log_progress "Running Kraken2 analysis on $FASTA_FILE..."
                     	basename_fasta=$(basename "$FASTA_FILE" .fa)
-                    	kraken2 --db "$DBNAME" "$FASTA_FILE" --output "$DATA_OUTPUT_PATH/kraken2/${basename_fasta}_kraken2_output.txt" --report "$DATA_OUTPUT_PATH/kraken2/${basename_fasta}_kraken2_report.txt" --threads $THREADS --confidence 0.01 --minimum-base-quality 0
+                    	kraken2 --db "$DBNAME" "$FASTA_FILE" --output "$DATA_OUTPUT_PATH/kraken2/${basename_fasta}.kraken2" --report "$DATA_OUTPUT_PATH/kraken2/${basename_fasta}_kraken2_report.txt" --threads $THREADS --confidence 0.01 --minimum-base-quality 0
             	    done <<< "$FASTA_FILES"
             	fi
     	    	done <<< "$UNIQUE_DIRS"
