@@ -13,7 +13,7 @@ if ! check_for_checkpoint "kraken2"; then
             read -p "Enter a location for your new Kraken2 database: " DBNAME
             log_progress "Creating and building new Kraken2 database at $DBNAME..."
 	mkdir -p "$DBNAME"
-            if kraken2-build --standard --db "$DBNAME"; then
+            if kraken2-build --standard --db "$DBNAME" --threads $THREADS; then
 	    database_setup_success=true
 	database_setup_manual=false
       	    else
@@ -93,16 +93,15 @@ if ! check_for_checkpoint "bracken"; then
     	log_progress "Building Bracken database using $DBNAME..."
     	bracken-build -d $DBNAME  -t $THREADS -l $READ_LEN
     	log_progress "Starting Bracken analysis..."
-        find "$DATA_OUTPUT_PATH/kraken2/" -type f -name "*._report.txt" | while read report_file; do
-    	    base_report=$(basename "$REPORT" "_report.txt")
+        find "$DATA_OUTPUT_PATH/kraken2/" -type f -name "*.report.txt" | while read report_file; do
+    	    base_report=$(basename "$REPORT" "report.txt")
 	    bracken -d $DBNAME -i $REPORT -o $DATA_OUTPUT_PATH/braken/${base_report}.txt -l S -t $THREADS -r $READ_LEN
 	    log_progress "Bracken analysis completed for $base_report..."
         done
     else
-    	find "$DATA_OUTPUT_PATH/kraken2/" -type f -name "*._report.txt" | while read report_file; do
-    	    base_report=$(basename "$REPORT" "_report.txt")
-    	    python est_abundance.py -i $REPORT -k $DBNAME/database${READ_LEN}mers.kmer_distrib -o $DATA_OUTPUT_PATH/braken/${base_report}.txt -l S -t $THREADS -r $READ_LEN
-    	    log_progress "Bracken analysis completed for $base_report..."	
+    	find "$DATA_OUTPUT_PATH/kraken2/" -type f -name "*.report.txt" | while read report_file; do
+    	    base_report=$(basename "$REPORT" "report.txt")
+    	    python est_abundance.py -i $REPORT -k $DBNAME/database${READ_LEN}mers.kmer_distrib -o $DATA_OUTPUT_PATH/braken/${base_report}.txt -l S -t $THREADS
     	done
     fi
     create_checkpoint "bracken"
@@ -111,7 +110,5 @@ if ! check_for_checkpoint "bracken"; then
 fi
 
 
-(biopy38_env) lj752@bspc-linux-13:/mnt/data/lj752/data/MSc_training/15_APR_final/366$ python /mnt/data/lj752/tools/miniforge/envs/biopy38_env/bin/est_abundance.py -i /mnt/data/lj752/data/MSc_training/15_APR_final/366/data_output/kraken2/bin.1_kraken2_report.txt -k /mnt/data/lj752/data/MSc_training/scripting/K2_DB_DOWNLOAD/database100mers.kmer_distrib  -o /mnt/data/lj752/data/MSc_training/15_APR_final/366/data_output/braken/bin.1_bracken.txt -l S -t 10
-PROGRAM START TIME: 04-17-2024 13:17:20
->> Checking report file: /mnt/data/lj752/data/MSc_training/15_APR_final/366/data_output/kraken2/bin.1_kraken2_report.txt
-Error: no reads found. Please check your Kraken report
+log_progress "Pipeline execution completed."
+echo "If you wish to rerun the pipeline or specific steps, remember to delete the '.<step_name>_done' checkpoint files from '$DATA_OUTPUT_PATH'."
