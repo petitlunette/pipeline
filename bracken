@@ -1,135 +1,36 @@
-#Kraken2 
+Step 1: Bracken-build
 
-if ! check_for_checkpoint "kraken2"; then
-    DBNAME=$(get_config_value "Kraken2" "dbname")
-    THREADS=$(get_config_value "Data" "default_threads")
-    database_setup_success=false
-    database_setup_manual=false
-    if [[ -z "$DBNAME" ]]; then
-        read -p "No Kraken2 database location found in the config. Do you have an existing Kraken2 database? (yes/no): " has_kraken_db
-        if [[ "$has_kraken_db" == "yes" ]]; then
-            read -p "Enter the location of your existing Kraken2 database: " DBNAME
-	database_setup_success=true
-	database_setup_manual=false
-        else
-            read -p "Enter a location for your new Kraken2 database: " DBNAME
-            log_progress "Creating and building new Kraken2 database at $DBNAME..."
-	mkdir -p "$DBNAME"
-            if kraken2-build --standard --db "$DBNAME"; then
-	    database_setup_success=true
-	database_setup_manual=false
-      	    else
-                log_progress "Standard database build failed. Attempting to download prebuilt database..."
-                wget -O "$DBNAME/k2_standard_20240112.tar.gz" https://genome-idx.s3.amazonaws.com/kraken/k2_standard_20240112.tar.gz
-		if [ $? -eq 0 ]; then
-                    log_progress "Extracting database..."
-		    tar -xzf "$DBNAME/k2_standard_20240112.tar.gz" -C "$DBNAME" --strip-components=1 
-		    rm "$DBNAME/k2_standard_20240112.tar.gz"
-      		    database_setup_success=true
-		    database_setup_manual=true
-                else
-                    log_progress "Failed to download the prebuilt database. Please check your internet connection or the URL and try again."
-                    fi
-                fi
-	    fi 
-	    if [[ "$database_setup_success" == true ]]; then
-                log_progress "Database $DBNAME setup complete."
-                sed -i "/^\[Kraken2\]/,/^\[/ {/^dbname=/ s|=.*|=$DBNAME|}" "$config_file"
-                log_progress "Kraken2 database location updated in config: $DBNAME"
-            else
-	    	log_progress "Kraken2 database setup failed. Exiting."
-      		exit 1
-    	    fi
-        else
-   	    log_progress "Found Kraken2 database location in config: $DBNAME"
-	    database_setup_success=true
-        fi
-	if [[ "$database_setup_success" == true ]]; then
-            log_progress "Starting  Kraken2 analysis..."
-	    EXCLUDE_DIRS=("concoct_bins" "figures" "maxbin2_bins" "work_files")
- 	    UNIQUE_DIRS=$(find "$DATA_OUTPUT_PATH/metawrap/final_bins" -mindepth 1 -maxdepth 1 -type d | grep -vE "$(printf "|%s" "${EXCLUDE_DIRS[@]}" | sed 's/^|//')")
-    	    if [ -z "$UNIQUE_DIRS" ]; then
-           	log_progress "No unique directories found."
-            	exit 1
-   	    fi
-    	    log_progress "Unique directories found: $UNIQUE_DIRS"
-    	    while read -r UNIQUE_DIR; do
-       	    	if [ ! -z "$UNIQUE_DIR" ]; then
-            	    log_progress "Processing directory: $UNIQUE_DIR"
-            	    FASTA_FILES=$(find "$UNIQUE_DIR" -type f -name "*.fa")
-            	    if [ -z "$FASTA_FILES" ]; then
-                    	log_progress "No FASTA files found in $UNIQUE_DIR."
-                    	continue
-            	    fi
-            	    while read -r FASTA_FILE; do
-                    	log_progress "Running Kraken2 analysis on $FASTA_FILE..."
-                    	basename_fasta=$(basename "$FASTA_FILE" .fa)
-                    	kraken2 --db "$DBNAME" "$FASTA_FILE" --output "$DATA_OUTPUT_PATH/kraken2/${basename_fasta}.kraken2" --report "$DATA_OUTPUT_PATH/kraken2/${basename_fasta}_kraken2_report.txt" --threads $THREADS --confidence 0.01 --minimum-base-quality 0
-            	    done <<< "$FASTA_FILES"
-            	fi
-    	    	done <<< "$UNIQUE_DIRS"
-    	    else
-            	log_progress "Unable to proceed without a valid Kraken2 database setup."
-            exit 1
-    	fi
-    	create_checkpoint "kraken2"
-	log_progress "Kraken2 analysis completed. Results are stored in $DATA_OUTPUT_PATH/metawrap"
-fi
+Bracken relies on bayesian probabilities that derive from knowledge about the Kraken classification of each read-length kmer from all genomes within the Kraken database. Therefore, prior to abundance estimation with bracken, we must divide each genome in the Kraken database into read-length kmers and classify each of those kmers.
 
+Run either Step 1 or Steps 1a/1b/1c combined. Step 1 will perform Steps 1a/1b/1c using a single script.
 
-if ! check_for_checkpoint "bracken"; then
-    eval "$(conda shell.bash hook)"
-    BRACKEN_ENV=$(get_config_value "Bracken" "conda_env")
-    export PATH=${program_paths[Bracken]}:$PATH
-    if [ -z "$BRACKEN_ENV" ]; then
-        echo "Conda environment name not found in config.ini. Please specify it under the [Bracken] section."
-        exit 1
-    fi
-    echo "Using Conda environment: $BRACKEN_ENV"
-    conda activate $BRACKEN_ENV
-    log_progress "Starting Bracken analysis..."
-    DBNAME=$(get_config_value "Kraken2" "dbname")
-    THREADS=$(get_config_value "Data" "default_threads")
-    READ_LEN=$(get_config_value "Bracken" "read_length")
-    if [[ "$database_setup_manual" == "false" ]]; then
-    	log_progress "Building Bracken database using $DBNAME..."
-    	bracken-build -d $DBNAME  -t $THREADS -l $READ_LEN
-    	log_progress "Starting Bracken analysis..."
-        find "$DATA_OUTPUT_PATH/kraken2/" -type f -name "*._report.txt" | while read report_file; do
-    	    base_report=$(basename "$REPORT" "_report.txt")
-	    bracken -d $DBNAME -i $REPORT -o $DATA_OUTPUT_PATH/braken/${base_report}.txt -l S -t $THREADS
-	    log_progress "Bracken analysis completed for $base_report..."
-        done
-    else
-    	find "$DATA_OUTPUT_PATH/kraken2/" -type f -name "*._report.txt" | while read report_file; do
-    	    base_report=$(basename "$REPORT" "_report.txt")
-    	python est_abundance.py -i $REPORT -k $DBNAME/database${READ_LEN}mers.kmer_distrib -o $DATA_OUTPUT_PATH/braken/${base_report}.txt -l S -t $THREADS
-    	log_progress "Bracken analysis completed for $base_report..."	
-    	done
-    fi
-    create_checkpoint "bracken"
-    log_progress "Bracken analysis completed. Results are stored in $DATA_OUTPUT_PATH/bracken"
-    conda deactivate
-fi
+Step 1: Bracken-build - combination of Steps 1a/1b/1c in a single bash script [Please note bracken/bracken-build scripts cannot accept the long format for options at the moment].
 
+./bracken-build -d ${KRAKEN_DB} -t ${THREADS} -k ${KMER_LEN} -l ${READ_LEN} -x ${KRAKEN_INSTALLATION}
 
+    ${KRAKEN_DB} = built Kraken database [must have library/taxonomy folders]
+        Note: If using Kraken 1.0, this script will check for .kdb/.idb files and seqid2taxid.map. If using Kraken 2.0, this script for taxo.k2d and seqid2taxid.map files 
 
-2024-04-16 15:05:18 - Using Conda environment: biopy38_env
-2024-04-16 15:05:19 - Starting Bracken analysis...
-2024-04-16 15:05:19 - Building Bracken database using /mnt/data/lj752/data/MSc_training/scripting/K2_DB_DOWNLOAD/...
- >> Selected Options:
-       kmer length = 35
-       read length = 100
-       database    = /mnt/data/lj752/data/MSc_training/scripting/K2_DB_DOWNLOAD/
-       threads     = 10
-       kraken type = kraken2
- >> Checking for Valid Options...
- ERROR: Database library /mnt/data/lj752/data/MSc_training/scripting/K2_DB_DOWNLOAD/library does not exist
-2024-04-16 15:05:19 - Starting Bracken analysis...
+    ${KMER_LEN} = length of kmer used to build the database [default: 35
+        Note: Kraken 1 uses k=31 by default while Kraken 2 uses k=35. 
 
+    ${READ_LEN} = ideal length of reads in your sample [default: 100]
 
- bracken-build -d ${KRAKEN_DB} -t ${THREADS} -k ${KMER_LEN} -l ${READ_LEN}
-    ${KRAKEN_DB} is the path to a built Kraken database which also must contain:
-        the taxonomy/nodes.dmp file
-        and library sequences *.fna, *.fa, or *.fasta in the library directory.
+    ${KRAKEN_INSTALLATION} = path to kraken or kraken2 executables.
+        Note: This parameter is NOT required. If not specified, the script will check for kraken2 then kraken in the user PATH. If none are found, the program will return an error. If both kraken and kraken2 are installated, the script will use kraken2 by default. 
 
+    ${THREADS} = number of threads to use for parallel processing of the library files. 
+
+Step #1a: Search all library input sequences against the database using:
+
+kraken --db=${KRAKEN_DB} --threads=10 <( find -L ${KRAKEN_DB}/library \( -name "*.fna" -o -name "*.fasta" -o -name "*.fa" \) -exec cat {} + ) > database.kraken
+
+kraken2 --db=${KRAKEN2_DB} --threads=10 <( find -L ${KRAKEN_DB}/library \( -name "*.fna" -o -name "*.fasta" -o -name "*.fa" \) -exec cat {} + ) > database.kraken
+
+Step #1b: Compute the classifications for each perfect read of ${READ_LENGTH} base pairs from one of the input sequences.
+
+./kmer2read_distr --seqid2taxid ${KRAKEN_DB}/seqid2taxid.map --taxonomy ${KRAKEN_DB}/taxonomy --kraken database.kraken --output database${READ_LEN}mers.kraken -k ${KMER_LEN} -l ${READ_LEN} -t ${THREADS}
+
+Step #1c: Generate kmer distribution file from the.
+
+python generate_kmer_distribution.py -i database${READ_LEN}mers.kraken; -o database${READ_LEN}mers.kmer_distrib  does this mean i need my read sequences in the library folder? or the output.kraken files in the library folder of the kraken db?
