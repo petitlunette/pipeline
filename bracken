@@ -1,3 +1,9 @@
+bracken-build -d /mnt/data/lj752/data/MSc_training/scripting/K2_DB_DOWNLOAD/  -t 10 -l 100
+
+
+python /mnt/data/lj752/tools/miniforge/envs/biopy38_env/bin/est_abundance.py -i /mnt/data/lj752/data/MSc_training/15_APR_final/366/data_output/kraken2/bin.1_kraken2_report.txt -k /mnt/data/lj752/data/MSc_training/scripting/K2_DB_DOWNLOAD/database100mers.kmer_distrib/database100mers.kmer_distrib  -o /mnt/data/lj752/data/MSc_training/15_APR_final/366/data_output/braken/bin.1_bracken.txt -l G -t 10 -r 100
+
+
 #!/bin/bash
 
 # Path to the configuration file
