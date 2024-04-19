@@ -1,0 +1,10 @@
+100.00	1	0	R	1	root
+100.00	1	0	R1	131567	  cellular organisms
+100.00	1	0	D	2	    Bacteria
+100.00	1	0	P	1224	      Pseudomonadota
+100.00	1	0	C	1236	        Gammaproteobacteria
+100.00	1	0	O	72274	          Pseudomonadales
+100.00	1	0	F	135621	            Pseudomonadaceae
+100.00	1	0	G	286	              Pseudomonas
+100.00	1	0	G1	136841	                Pseudomonas aeruginosa group
+100.00	1	1	S	287	                  Pseudomonas aeruginosa

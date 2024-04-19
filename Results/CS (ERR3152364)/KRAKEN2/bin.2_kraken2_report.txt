@@ -1,0 +1,11 @@
+ 20.00	2	2	U	0	unclassified
+ 80.00	8	0	R	1	root
+ 80.00	8	0	R1	131567	  cellular organisms
+ 80.00	8	0	D	2	    Bacteria
+ 80.00	8	0	D1	1783272	      Terrabacteria group
+ 80.00	8	0	P	1239	        Bacillota
+ 80.00	8	0	C	91061	          Bacilli
+ 80.00	8	0	O	1385	            Bacillales
+ 80.00	8	0	F	90964	              Staphylococcaceae
+ 80.00	8	0	G	1279	                Staphylococcus
+ 80.00	8	8	S	1280	                  Staphylococcus aureus

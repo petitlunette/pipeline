@@ -1,0 +1,23 @@
+2024-04-15 12:52:26,833 NanoPlot 1.42.0 started with arguments Namespace(threads=10, verbose=False, store=False, raw=False, huge=False, outdir='/mnt/data/lj752/data/MSc_training/15_APR_final/366/data_output/nanoplot', no_static=False, prefix='', tsv_stats=False, only_report=False, info_in_report=False, maxlength=None, minlength=None, drop_outliers=False, downsample=None, loglength=False, percentqual=False, alength=False, minqual=None, runtime_until=None, readtype='1D', barcoded=False, no_supplementary=False, color='#4CB391', colormap='Greens', format=['png'], plots=['kde', 'dot'], legacy=None, listcolors=False, listcolormaps=False, no_N50=False, N50=False, title=None, font_scale=1, dpi=100, hide_stats=False, fastq=['/mnt/data/lj752/data/22-MAR/ERR3152366.fastq'], fasta=None, fastq_rich=None, fastq_minimal=None, summary=None, bam=None, ubam=None, cram=None, pickle=None, feather=None, path='/mnt/data/lj752/data/MSc_training/15_APR_final/366/data_output/nanoplot/')
+2024-04-15 12:52:26,833 Python version is: 3.10.9 (main, Mar  1 2023, 18:23:06) [GCC 11.2.0]
+2024-04-15 12:52:26,841 Nanoget: Starting to collect statistics from plain fastq file.
+2024-04-15 13:10:25,657 Reduced DataFrame memory usage from 55.96142578125Mb to 55.96142578125Mb
+2024-04-15 13:10:25,848 Nanoget: Gathered all metrics of 3667480 reads
+2024-04-15 13:10:28,489 Calculated statistics
+2024-04-15 13:10:28,490 Using sequenced read lengths for plotting.
+2024-04-15 13:10:28,637 NanoPlot:  Valid color #4CB391.
+2024-04-15 13:10:28,637 NanoPlot:  Valid colormap Greens.
+2024-04-15 13:10:28,899 NanoPlot:  Creating length plots for Read length.
+2024-04-15 13:10:28,903 NanoPlot:  Using 3667480 reads maximum of 192753bp.
+2024-04-15 13:10:29,771 Saved /mnt/data/lj752/data/MSc_training/15_APR_final/366/data_output/nanoplot/WeightedHistogramReadlength  as png (or png for --legacy)
+2024-04-15 13:10:30,638 Saved /mnt/data/lj752/data/MSc_training/15_APR_final/366/data_output/nanoplot/WeightedLogTransformed_HistogramReadlength  as png (or png for --legacy)
+2024-04-15 13:10:31,454 Saved /mnt/data/lj752/data/MSc_training/15_APR_final/366/data_output/nanoplot/Non_weightedHistogramReadlength  as png (or png for --legacy)
+2024-04-15 13:10:32,280 Saved /mnt/data/lj752/data/MSc_training/15_APR_final/366/data_output/nanoplot/Non_weightedLogTransformed_HistogramReadlength  as png (or png for --legacy)
+2024-04-15 13:10:33,763 Saved /mnt/data/lj752/data/MSc_training/15_APR_final/366/data_output/nanoplot/Yield_By_Length  as png (or png for --legacy)
+2024-04-15 13:10:33,763 Created length plots
+2024-04-15 13:10:33,786 NanoPlot: Creating Read lengths vs Average read quality plots using 3667480 reads.
+2024-04-15 13:10:35,401 Saved /mnt/data/lj752/data/MSc_training/15_APR_final/366/data_output/nanoplot/LengthvsQualityScatterPlot_dot  as png (or png for --legacy)
+2024-04-15 13:10:37,540 Saved /mnt/data/lj752/data/MSc_training/15_APR_final/366/data_output/nanoplot/LengthvsQualityScatterPlot_kde  as png (or png for --legacy)
+2024-04-15 13:10:37,540 Created LengthvsQual plot
+2024-04-15 13:10:37,540 Writing html report.
+2024-04-15 13:10:37,548 Finished!
